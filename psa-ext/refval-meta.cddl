@@ -1,0 +1,12 @@
+$$reference-value-extension //= (
+  2 => psa-refval-meta
+)
+
+psa-refval-meta = {
+  ? 1 => text           ; measurement type
+  ? 2 => text           ; version
+    3 => psa-hash-type  ; signer id
+  ? 4 => text           ; measurement description
+}
+
+psa-hash-type = bytes .size 32 / bytes .size 48 / bytes .size 64

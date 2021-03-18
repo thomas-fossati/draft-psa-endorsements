@@ -1,0 +1,11 @@
+{
+  / instance id / 0 : 48000(h'014ca3e4f50bf248c39787020d68ffd05c88767751bf2645ca923f57a98becd296'),
+  / IAK pub key / 1 : [
+    {
+      / kty /  1 : 2, / EC2 /
+      / crv / -1 : 1, / P-256 /
+      / x /   -2 : h'30a0424cd21c2944838a2d75c92b37e76ea20d9f00893a3b4eee8a3c0aaf',
+      / y /   -3 : h'e04b65e92456d9888b52b379bdfbd51ee869ef1f0fc65b6659695b6cce08'
+    }
+  ]
+}

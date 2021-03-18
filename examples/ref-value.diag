@@ -1,0 +1,20 @@
+{
+  / element name /  0 : {
+    / implementation id / 2 : 47115(h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030303031')
+  },
+
+  / element value / 1 : {
+    / digests-entry / 2 : [
+      [
+        / hash-algo  / 1, / sha256 /
+        / hash-value / h'44aa336af4cb14a879432e53dd6571c7fa9bccafb75f488259262d6ea3a4d91b'
+      ]
+    ]
+  },
+
+  / psa-refval-meta / 2 : {
+    / measurement type /   1 : "PRoT",
+    / version /            2 : "1.3.5",
+    / signer id /          3 : h'acbb11c7e4da217205523ce4ce1a245ae1a239ae3c6bfd9e7871f7e5d8bae86b'
+  }
+}
