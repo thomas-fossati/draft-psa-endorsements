@@ -126,6 +126,54 @@ firmware measurement associated with Implementation ID
 ~~~
 {: #ex-reference-value title="Example Reference Value"}
 
+### Firmware Updates and Patches
+{: #sec-fw-evo}
+
+Firmware RoT descriptors that are part of the same upgrade chain can be linked
+together using one of `comid-patches` or `comid-updates` relations, depending on
+the precise nature of their relationship.  For example, if using semantic
+versioning {{SEMA-VER}}, a bump in the MINOR version number would be associated
+with a `comid-updates` relation, whereas an increase in the PATCH indicator
+would have a corresponding `comid-patches` relation between the involved
+components.  Note that `comid-updates` relations would only occur between
+firmware RoT descriptors that have PATCH number 0 and "adjacent" MINOR numbers
+as illustrated in {{fig-updates-patches}}.  Note that changing the MAJOR
+version number would typically result in a separate product / upgrade chain.
+
+~~~ goat
+{::include art/updates-patches.txt}
+~~~
+{: #fig-updates-patches title="Updates, Patches Relations and Semantic Versioning"}
+
+The Reference Value CoMID of the patching or updating firmware has a
+`linked-tag-entry` map populated as follows:
+
+* key 0 contains the tag identifier of the Reference Value CoMID of the patched
+  or updated firmware;
+* key 1 contains one of `comid-patches` or `comid-updates` relations.
+
+{{ex-linked-tag}} provides an example of a Reference Value CoMID patching
+another Reference Value CoMID with a UUID tag identifier
+`3f06af63-a93c-11e4-9797-00505690773f`.
+
+~~~ goat
+{::include examples/linked-tag.diag}
+~~~
+{: #ex-linked-tag title="Example linked tag in a patch Reference Value CoMID"}
+
+#### Update Graph
+
+{{fig-device-refval-updates}} illustrates the "update" graph for the firmware
+components associated with a given PSA hardware RoT.  Each node in the graph is
+the Reference Value CoMID associated with a specific version of one firmware
+component. Each tagged edge is the CoMID-to-CoMID link relation describing an
+update or patch action on the target node by the source node.
+
+~~~ goat
+{::include art/one-comid-per-refval-updates.txt}
+~~~
+{: #fig-device-refval-updates title="Firmware update graph"}
+
 ### CoMID Layout
 
 Depending on the firmware update strategy, Endorsers have the following
@@ -134,39 +182,11 @@ two packing options:
 1. Put multiple Reference Values in one CoMID;
 2. Use one CoMID for each Reference Value.
 
-The first MAY be used if the device firmware is made of separately measurable
-components and these components are always installed together in a single
-software update operation.  If differential software updates are possible (or
-if there is only one measurable firmware component), Endorsers MUST use the
-second.
-
-### Firmware Updates and Patches
-{: #sec-fw-evo}
-
-Firmware RoT descriptors that are part of the same upgrade chain can be linked
-together by means of `comid-patches` or `comid-updates` relations depending on
-the precise nature of their relationship.  For example, if using semantic
-versioning {{SEMA-VER}}, a bump in the MINOR version number would be associated
-with a `comid-updates` relation, whereas an increase in the PATCH indicator
-would have a corresponding `comid-patches` relation between the involved
-components.  Note that `comid-updates` relations would only occur between
-firmware RoT descriptors that have PATCH number 0 and "adjacent" MINOR numbers
-(see {{fig-updates-patches}}).  Continuing on the semantic version example, a
-bump in the MAJOR version number would typically spawn a fully separate product
-/ upgrade chain.
-
-~~~ goat
-{::include art/updates-patches.txt}
-~~~
-{: #fig-updates-patches title="Updates, Patches Relations and Semantic Versioning"}
-
-{{fig-device-refval-updates}} illustrates the link relations between CoMIDs,
-each containing the Reference Value associated with a given firmware component.
-
-~~~ goat
-{::include art/one-comid-per-refval-updates.txt}
-~~~
-{: #fig-device-refval-updates title="TODO(tho)"}
+The first packing option MAY be used if the device firmware is made of
+separately measurable components and these components are always installed
+together in a single software update operation.  If differential software
+updates are possible (or if there is only one measurable firmware component),
+Endorsers MUST use the second packing option.
 
 ## Identity
 {: #sec-identity}
@@ -186,7 +206,6 @@ The IAK public key is encoded as a COSE Key according to Section 7 of
 The example in {{ex-identity-claim}} shows a CoMID identity claim carrying a
 secp256r1 EC public IAK associated with Instance ID `4ca3...d296`.
 
-
 ~~~
 {::include examples/instance-pub.diag}
 ~~~
@@ -194,8 +213,7 @@ secp256r1 EC public IAK associated with Instance ID `4ca3...d296`.
 
 ### CoMID Layout
 
-TODO
-
+An Identity CoMID can carry as many Identity Claims as needed.
 
 ## Example
 
