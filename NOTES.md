@@ -4,3 +4,8 @@
   * 1 CoMID per bundle of SW components if you update always in block
     * CoMID nearly OK.  The only annoying thing is having to restate the same element-name that is anyway already in the top-level module meta...
 
+
+* how to flag a security critical update / patch?
+  * options:
+    * extend linked tag entry
+    * extend tag-rel-type to accept "parameters / flags"
