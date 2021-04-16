@@ -33,6 +33,11 @@ author:
   org: Arm Ltd
   email: yogesh.deshpande@arm.com
 
+-
+  name: Henk Birkholz
+  org: Fraunhofer SIT
+  email: henk.birkholz@sit.fraunhofer.de
+
 normative:
   PSA-TOKEN: I-D.tschofenig-rats-psa-token
 
