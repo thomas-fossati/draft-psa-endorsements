@@ -1,0 +1,12 @@
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/larseggert/i-d-toolchain:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build draft
+        run: kdrfc -h -3 draft-xyz-rats-psa-endorsements.md
