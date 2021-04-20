@@ -9,7 +9,7 @@ jobs:
       - name: install base tools
         run: sudo apt-get update && sudo apt-get install -y curl git
       - name: install go
-        run: curl -O -L https://golang.org/dl/go1.16.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.16.3.linux-amd64.tar.gz
+        run: curl -O -L https://golang.org/dl/go1.16.3.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go1.16.3.linux-amd64.tar.gz
       - name: update PATH
         run: echo "/usr/local/go/bin" >> $GITHUB_PATH
       - name: install goat
