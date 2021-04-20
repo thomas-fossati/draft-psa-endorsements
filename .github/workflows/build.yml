@@ -6,9 +6,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: install base tools
+        run: apt-get update && apt-get install -y curl git
+      - name: install go
+        run: curl -O -L https://golang.org/dl/go1.16.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.16.3.linux-amd64.tar.gz
+      - name: update PATH
+        run: echo "/usr/local/go/bin" >> $GITHUB_PATH
+      - name: install goat
+        run: go get github.com/blampe/goat
+      - name: update PATH
+        run: echo "/root/go/bin" >> $GITHUB_PATH
       - name: install cabo tools
         run: gem install --user-install cbor-diag cddl kramdown-rfc2629
-      - name: set up PATH
+      - name: update PATH
         run: echo "$(gem env gempath | cut -d':' -f1)/bin" >> $GITHUB_PATH
       - uses: actions/checkout@v2
       - name: build draft
