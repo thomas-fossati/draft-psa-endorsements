@@ -5,8 +5,11 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/larseggert/i-d-toolchain:latest
     steps:
+      - name: install cabo tools
+        run: gem install --user-install cbor-diag cddl kramdown-rfc2629
+      - name: set up PATH
+        run: echo "$(gem env gempath | cut -d':' -f1)/bin" >> $GITHUB_PATH
       - uses: actions/checkout@v2
       - name: build draft
         run: kdrfc -h -3 draft-xyz-rats-psa-endorsements.md
