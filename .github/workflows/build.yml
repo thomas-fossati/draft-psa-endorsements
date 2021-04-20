@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: install base tools
-        run: apt-get update && apt-get install -y curl git
+        run: sudo apt-get update && sudo apt-get install -y curl git
       - name: install go
         run: curl -O -L https://golang.org/dl/go1.16.3.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.16.3.linux-amd64.tar.gz
       - name: update PATH
