@@ -1,9 +1,9 @@
 {
-  / element name /  0 : {
+  / comid.element-name /  0 : {
     / implementation id / 2 : 47115(h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030303031')
   },
 
-  / element value / 1 : {
+  / comid.element-value / 1 : {
     / digests-entry / 2 : [
       [
         / hash-algo  / 1, / sha256 /
