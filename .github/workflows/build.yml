@@ -8,9 +8,9 @@ jobs:
     container: thomasfossati/kdrfc:latest
     steps:
     - uses: actions/checkout@v2
-    - name: build draft
-      run: make && mkdir -p public/${GITHUB_REF##*/} && cp draft-xyz-rats-psa-endorsements.html public/${GITHUB_REF##*/}
-    - name: Deploy to GitHub Pages
+    - name: build draft and check for nits
+      run: _PUBLISH_DIR=public/${GITHUB_REF##*/} make all _pre-publish
+    - name: deploy to gitHub pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v2
       with:
