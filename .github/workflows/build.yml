@@ -5,11 +5,7 @@ on:
     branches-ignore:
       - master
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
+    types: [closed]
 
 jobs:
   build:
