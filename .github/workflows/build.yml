@@ -16,7 +16,7 @@ jobs:
     - name: build draft and check for nits
       run: _PUBLISH_DIR=public/${GITHUB_REF##*/} make all _pre-publish
     - name: deploy to github pages
-      if: github.event.pull_request.merged == true
+      if: if: success() && github.event.pull_request.merged == true
       uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
