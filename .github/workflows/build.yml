@@ -15,3 +15,11 @@ jobs:
       with:
         name: draft-latest
         path: draft-xyz-rats-psa-endorsements.html
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        target_branch: gh-pages
+        build_dir: ./
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
