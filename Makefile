@@ -49,3 +49,8 @@ run-docker: ; $(docker_run_it)
 #   make docker-clean
 docker-%:
 	$(docker_run_it) bash -c "make $(subst docker-,,$@)"
+
+# CI specific target to populate gh-pages
+_PUBLISH_DIR ?= public/main
+_pre-publish: $(HTML)
+	mkdir -p $(_PUBLISH_DIR) && cp $< $(_PUBLISH_DIR)
