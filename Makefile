@@ -1,5 +1,7 @@
 DRAFT := draft-xyz-rats-psa-endorsements
 
+SHELL := /bin/bash
+
 KDRFC := kdrfc
 KDRFC_ARGS := --v3
 KDRFC_ARGS += --html
