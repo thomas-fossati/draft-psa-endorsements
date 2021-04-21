@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build draft
-      run: make && mkdir -p ${GITHUB_REF##*/} && cp draft-xyz-rats-psa-endorsements.html ${GITHUB_REF##*/}
+      run: make && mkdir -p public/${GITHUB_REF##*/} && cp draft-xyz-rats-psa-endorsements.html public/${GITHUB_REF##*/}
     - name: Archive draft
       uses: actions/upload-artifact@v2
       with:
@@ -20,6 +20,6 @@ jobs:
       uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
-        build_dir: ${GITHUB_REF##*/}
+        build_dir: public
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
