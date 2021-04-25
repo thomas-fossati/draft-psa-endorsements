@@ -220,6 +220,53 @@ secp256r1 EC public IAK associated with Instance ID `4ca3...d296`.
 
 An Identity CoMID can carry as many Identity Claims as needed.
 
+# PSA Supply Chain Provisioning Actors
+
+{: #sec-supplychain}
+There are various stages of PSA provisioning, performed by one or more actors at a different stage of a PSA Device.
+
+PSA Endorsements are conveyed using Concise Reference Integrity Manifest (CoRIM) structure, using CBOR Object Signing and 
+Encryption (COSE) protocol. The PSA Endorsement CoRIM is organised in a following manner:
+
+* A CoRIM Header which comprises of security information for the payload namely, security algorithm used, key identifier of CoRIM issuer and a corim-meta-map which consists of details about the signer and also CoRIM validity period.
+
+* A CoRIM payload which is a structure comprising of an array of one more CoMID's carrying the actual endorsements.
+
+* Signature of the CoRIM Header and Payload which is signed by the Endorser, using its key credentials.
+
+The above structure is transmitted as a CBOR Message.
+
+The Verifier upon receiving the CBOR Message will first Unmarshal its contents to construct the original structure.
+It then verifies the signature received in the Header using the Public key of the signing entity, i.e the endorser.
+If signature matches, the actual endorsements are provisioned in the verifier.
+
+The following are the possible provisioning actors and enlist the specific information they provision in a verifier.
+
+## Original Equipment Manufacturer (OEM)
+
+This entity is responsible for provisioning of the class endorsements, i.e. the endorsements that define the Reference Value claims for the base composition of a PSA RoT device. These Claims carry information about Immutable RoT, i.e PSA Platform as well as the software measurements belonging to the Mutable RoT, i.e the baseline firmware components.
+How these measurements are populated in a set of CoMID's depend upon the Provisioning Model chosen by the endorser.
+Subsequently a CoRIM Manifest is created and transmitted to the Verifier, as mentioned above.
+
+## Original Device Manufacturer (ODM)
+
+The role of ODM is at a subsequent stage in the provisioning sequence. When multiple instances of the same device class (template) are created, this entity provisions the Identity Claims associated to each device.
+Identity Claims carry the verification key associated with the Initial Attestation Key (IAK) of a PSA device.
+
+Each verification key is encoded alongside the corresponding device Instance ID in a CoMID identity claim.
+
+## Independent Software Vendor (ISV)
+
+It is assumed that future modifications to the baseline firmware components provisioned by OEM can be independently
+maintained by ISV's. This actor will provision future minor modifications to the baseline firmware components
+via generating new CoMIDs which are patches to the baseline software component CoMIDs.
+Any major revision of the software component will be marked via new CoMID which are updates to the baseline software component CoMIDs.
+
+## Certification Authority
+
+PSA devices undergo certification for either the PSA platform or specific measured firmware components or to the entire PSA device. Once the Certification is complete, the Certification Authority issues certificates and provisions the metadata for
+certificates into the verification service, using Certification CoMIDs. Within a CoMID, the Metadata is carried as Endorsed Claim. The CoMID is carried ina CoRIM signed by the Certification Authority.
+
 ## Example
 
 TODO
