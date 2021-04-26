@@ -228,7 +228,9 @@ There are various stages of PSA provisioning, performed by one or more actors at
 PSA Endorsements are conveyed using Concise Reference Integrity Manifest (CoRIM) structure, using CBOR Object Signing and 
 Encryption (COSE) protocol. The PSA Endorsement CoRIM is organised in a following manner:
 
-* A CoRIM Header which comprises of security information for the payload namely, security algorithm used, key identifier of CoRIM issuer and a corim-meta-map which consists of details about the signer and also CoRIM validity period.
+* A CoRIM Header which comprises of security information for the payload namely, security algorithm used, content type, key identifier of CoRIM issuer and a corim-meta-map which consists of details about the signer and also CoRIM validity period.
+
+* An unprotected signed header map
 
 * A CoRIM payload which is a structure comprising of an array of one more CoMID's carrying the actual endorsements.
 
@@ -252,20 +254,29 @@ Subsequently a CoRIM Manifest is created and transmitted to the Verifier, as men
 
 The role of ODM is at a subsequent stage in the provisioning sequence. When multiple instances of the same device class (template) are created, this entity provisions the Identity Claims associated to each device.
 Identity Claims carry the verification key associated with the Initial Attestation Key (IAK) of a PSA device.
+Each verification key is encoded alongside the corresponding device Instance ID in a CoMID Identity claim. The verification key is used by verifier to perform the signature verification on the PSA token (during attestation) to ascertain the correct source of the token. 
 
-Each verification key is encoded alongside the corresponding device Instance ID in a CoMID identity claim.
+Identity claims are conveyed using a CoMID tag. The module name (comid.module-name) indicates the platform identifier ( i.e. the Implementation ID)to which these claims are linked to. As Identity claims can be provisioned over a period of time in a single or multiple batches of N devices per CoMID, the platform identifier assists the verifier to link all Identity claims belonging to a PSA platform.
 
 ## Independent Software Vendor (ISV)
 
-It is assumed that future modifications to the baseline firmware components provisioned by OEM can be independently
-maintained by ISV's. This actor will provision future minor modifications to the baseline firmware components
-via generating new CoMIDs which are patches to the baseline software component CoMIDs.
-Any major revision of the software component will be marked via new CoMID which are updates to the baseline software component CoMIDs.
+This role tracks the future maintenance of the baseline firmware components (i.e the mutable components of a PSA RoT). It could be delegated to an ISV or even could be carried out by an ODM, if it owns the firmware components in its entirety.
+
+This actor will provision future minor modifications to the baseline firmware components
+via generating new CoMIDs which are patches to the baseline software component CoMIDs. For example in an  Atomic provisioning model:
+
+* An ISV generates a CoMID for the newly issued patch version  and sets the Reference Value Claims for the firmware measurements belonging to the patched firmware.
+
+* It sets the module name (comid.module-name) to platform identifier ( i.e. the Implementation ID), to which this firmware component is linked to.
+
+* It populates the linked tag entry to point to the baseline CoMID it patches and sets tag-rel to comid.patches
+
+Similarly, any major revision of the firmware component will be marked via a new CoMID which are updates to the baseline firmware component CoMIDs.
 
 ## Certification Authority
 
 PSA devices undergo certification for either the PSA platform or specific measured firmware components or to the entire PSA device. Once the Certification is complete, the Certification Authority issues certificates and provisions the metadata for
-certificates into the verification service, using Certification CoMIDs. Within a CoMID, the Metadata is carried as Endorsed Claim. The CoMID is carried ina CoRIM signed by the Certification Authority.
+certificates into the verification service, using Certification CoMIDs. Within a CoMID, the Metadata is carried as Endorsed Claim. The CoMID is carried in a CoRIM signed by the Certification Authority.
 
 ## Example
 
