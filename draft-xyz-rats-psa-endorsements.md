@@ -195,7 +195,7 @@ The certification status is encoded as a CoMID endorsement as follows:
 
 A PSA Certification data element has the following attributes:
 
-* `$cert-level-type-choice`    : PSA certification level.  Acceptable values are x, y, z...
+* `$cert-level-type-choice`    : PSA certification level
 * `cert-num-type`              : A unique number for each certificate
 * `cert-issue-date-type`       : Certificate date of issue, formatted as {{!RFC3339}} full-date (e.g., 2020-12-31)
 * `cert-test-lab-type`         : Name of the certification lab
