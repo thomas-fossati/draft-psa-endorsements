@@ -53,7 +53,7 @@ informative:
 
 --- abstract
 
-PSA Endorsements comprises reference values, cryptographic key material and
+PSA Endorsements comprise reference values, cryptographic key material and
 certification status information that a Verifier needs in order to appraise PSA
 Evidence.
 
@@ -72,7 +72,7 @@ The CoMIDs are bundled together in a CoRIM as a manifest by the Endorser, so tha
 
 This memo profiles and extends the CoMID data model to accommodate PSA specific requirements.
 
-PSA Endorsements comprises reference values, cryptographic key material and
+PSA Endorsements comprise reference values, cryptographic key material and
 certification related information that needs to be provisioned in a Verifier so that in can appraise
 evidence produced by a PSA device {{PSA-TOKEN}}.
 
