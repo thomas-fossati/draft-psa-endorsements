@@ -152,7 +152,7 @@ in a CoMID identity claim.
 
 The Instance ID is encoded using the `$device-id-type-choice` (0) entry in the `identity-claim-map` with a `tagged-ueid-type` type.
 
-The IAK public key is set in comid.key-material entry in the `identity-claim-map`.
+The IAK public key is set in the `COSE_KeySet` (1) entry in the `identity-claim-map`.
 The IAK public key is encoded as a COSE Key according to Section 7 of
 {{!RFC8152}} and wrapped in the `COSE_KeySet`. The number of items in the
 `COSE_KeySet` MUST be 1.
