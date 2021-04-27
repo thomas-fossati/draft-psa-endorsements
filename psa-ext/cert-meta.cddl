@@ -1,0 +1,47 @@
+comid.psa-cert-meta = 2
+
+$$endorsed-value-map-extension //= (
+  comid.psa-cert-meta => psa-cert-meta-map
+)
+
+; psa-cert-meta-map
+cert-level       = 1
+cert-num         = 2
+cert-issue-date  = 3
+cert-test-lab    = 4
+cert-holder      = 5
+cert-product     = 6
+cert-hw-version  = 7
+cert-sw-version  = 8
+cert-type        = 9
+cert-dev-type    = 10
+
+psa-cert-meta-map = {
+    cert-level       => $cert-level-type-choice,
+    cert-num         => cert-num-type,
+    cert-issue-date  => cert-issue-date-type,
+    cert-test-lab    => cert-test-lab-type,
+    cert-holder      => cert-holder-type,
+    cert-product     => cert-product-type,
+    cert-hw-version  => cert-hw-version-type,
+    cert-sw-version  => cert-sw-version-type,
+    cert-type        => cert-type-type,
+    cert-dev-type    => $cert-dev-type-type-choice
+}
+
+$cert-level-type-choice /= "PSA Certified Level 1"
+$cert-level-type-choice /= "PSA Certified Level 2" 
+$cert-level-type-choice /= "PSA Certified Level 3"
+
+cert-num-type          = text
+cert-issue-date-type   = text
+cert-test-lab-type     = text
+cert-holder-type       = text
+cert-product-type      = text
+cert-hw-version-type   = text
+cert-sw-version-type   = text
+cert-type-type         = text
+
+$cert-dev-type-type-choice /= "PSA Certified - Chip"
+$cert-dev-type-type-choice /= "PSA Certified - Device"
+$cert-dev-type-type-choice /= "PSA Certified - System Software"
