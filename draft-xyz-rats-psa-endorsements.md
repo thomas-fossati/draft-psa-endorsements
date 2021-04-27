@@ -116,8 +116,8 @@ for the module to which the measurements are attached.
 
 Each measurement is encoded in a CoMID reference value.  Specifically:
 
-* The Implementation ID is encoded using the class-id-type-choice (2) entry in the
-  `element-name` map with a `tagged-impl-id` type;
+* The Implementation ID is encoded using the `$class-id-type-choice` (2) entry in the
+  `element-name-map` with a `tagged-impl-id` type;
 * The raw measurement is encoded in the `digests-entry` in the `element-value`
   map;
 * The metadata associated with the measurement are encoded in a
@@ -150,7 +150,7 @@ Attestation Key (IAK) of a PSA device.
 Each verification key is encoded alongside the corresponding device Instance ID
 in a CoMID identity claim.
 
-The Instance ID is encoded using `tagged-ueid-type` as `$device-id-type-choice`.
+The Instance ID is encoded using the `$device-id-type-choice` (0) entry in the `identity-claim-map` with a `tagged-ueid-type` type.
 
 The IAK public key is encoded as a COSE Key according to Section 7 of
 {{!RFC8152}} and wrapped in the `COSE_KeySet`. The number of items in the
@@ -173,33 +173,31 @@ An Identity CoMID can carry as many Identity Claims as needed.
 A PSA Certification can certify PSA hardware, software RoT or the complete device.
 Specifically, it can certify one of the following:
 
-* The underlying platform, identified by the Impementation ID
+* The underlying platform, identified by the Impementation ID;
+* One or more firmware components of the mutable PSA RoT;
+* The entire PSA device.
 
-* One or more firmware components of the mutable PSA RoT.
-
-* To entire PSA device.
-
-PSA Certification claim contains the metadata about the certificate. The claim is 
+A PSA Certification claim contains the metadata about the certificate. The claim is 
 expressed by creating a new CoMID Tag for provisioning certification details.
 
 The certification status is encoded as a CoMID endorsement as follows:
 
-* The Implementation ID of the PSA RoT to which the certification metadata apply, is encoded 
-  using the class-id-type-choice (2) entry in the `element-name` map with a `tagged-impl-id` type;
+* The Implementation ID of the PSA RoT to which the certification metadata apply is encoded 
+  using the `class-id-type-choice` (2) entry in the `element-name-map` with a `tagged-impl-id` type;
 
 * The metadata associated with the certification is encoded in a `comid.psa-cert-meta` structure
-  which extends the `endorsed-value-map`.
+  which extends the `endorsed-value-map` through the `$$endorsed-value-map-extension` socket.
   
-* Optionally, the CoMID linked tags can contain one or more entries of linked-tag-map, each entry carries
-  tag id of CoMID, which it certifies and tag-rel type set to `comid.supplements` relation,
+* The CoMID MAY contain one or more `linked-tag-map` entries carrying the
+  tag id of the CoMID corresponding to the certified module with `$tag-rel-type-choice` set to `comid.supplements`,
   as illustrated in {{fig-cert-link}}.
 
 A PSA Certification data element has the following attributes:
 
 * `cert-level-type-choice`    : PSA certification level.  Acceptable values are x, y, z...
 * `cert-num-type`             : A unique number for each certificate
-* `cert-issue-date-type`      : Certificate date of issue, formatted as per RFC 3339 
-* `cert-test-lab-type`        : Name of the certication lab
+* `cert-issue-date-type`      : Certificate date of issue, formatted as {{!RFC3339}} full-date (e.g., 2020-12-31)
+* `cert-test-lab-type`        : Name of the certification lab
 * `cert-holder-type`          : Name of Organization which holds the certificate
 * `cert-product-type`         : Name of the product been certified
 * `cert-hw-version-type`      : Version of Hardware certified
@@ -220,7 +218,7 @@ The provisioning linkage of Certification CoMID to the RoT CoMID is illustrated 
 ~~~
 {: #fig-cert-link title="Certification Link to the RoT been certified"}
 
-The example in {{ex-cert-ext}} shows a CoMID endorsement claim carrying a
+The example in {{ex-cert-ext}} shows a CoMID endorsement claim carrying
 certification metadata associated to Implementation ID
 `acme-implementation-id-000000001`.
 
@@ -229,7 +227,7 @@ certification metadata associated to Implementation ID
 ~~~
 {: #ex-cert-ext title="Example Certification Claim"}
 
-The example in {{ex-cert-val-link}} shows the link entry to CoMID tag, been certified.
+The example in {{ex-cert-val-link}} shows the link entry to the CoMID tag being supplemented with certification information.
 
 ~~~
 {::include examples/cert-val-link.diag}
@@ -242,7 +240,9 @@ Two provisioning models are envisioned, for provisioning PSA Endorsements.
 
 * Atomic model ({{sec-atmoic}}), where each measured and updatable component of PSA RoT is expressed independently and hence each component has its own upgrade chain.
 
-* Bundled model ({{sec-bundled}}), where all the measured and updatable components of a PSA RoT are bundled together and are treated as single entity from the point of view of upgrade chain. The choice between atomic and bundled model depends upon the use case and individual deployment needs. One needs to make a choice at start
+* Bundled model ({{sec-bundled}}), where all the measured and updatable components of a PSA RoT are bundled together and are treated as single entity from the point of view of upgrade chain.
+
+The choice between atomic and bundled model depends upon the use case and individual deployment needs. One needs to make a choice at start
 before provisioning the endorsements.
 
 ### Atomic
@@ -301,7 +301,7 @@ The Reference Value CoMID of the patching or updating firmware has a
 * key 1 contains one of `comid.patches` or `comid.updates` relations.
 
 {{ex-linked-tag}} provides an example of a Reference Value CoMID patching
-another Reference Value CoMID with a UUID tag identifier
+another Reference Value CoMID with tag identifier
 `3f06af63-a93c-11e4-9797-00505690773f`.
 
 ~~~

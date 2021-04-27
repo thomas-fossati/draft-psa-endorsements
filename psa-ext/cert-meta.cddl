@@ -17,7 +17,7 @@ cert-type        = 9
 cert-dev-type    = 10
 
 psa-cert-meta-map = {
-    cert-level       => cert-level-type-choice,
+    cert-level       => $cert-level-type-choice,
     cert-num         => cert-num-type,
     cert-issue-date  => cert-issue-date-type,
     cert-test-lab    => cert-test-lab-type,
@@ -26,12 +26,12 @@ psa-cert-meta-map = {
     cert-hw-version  => cert-hw-version-type,
     cert-sw-version  => cert-sw-version-type,
     cert-type        => cert-type-type,
-    cert-dev-type    => cert-dev-type-type-choice
+    cert-dev-type    => $cert-dev-type-type-choice
 }
 
-cert-level-type-choice /= "PSA Certified Level 1"
-cert-level-type-choice /= "PSA Certified Level 2" 
-cert-level-type-choice /= "PSA Certified Level 3"
+$cert-level-type-choice /= "PSA Certified Level 1"
+$cert-level-type-choice /= "PSA Certified Level 2" 
+$cert-level-type-choice /= "PSA Certified Level 3"
 
 cert-num-type          = text
 cert-issue-date-type   = text
@@ -42,6 +42,6 @@ cert-hw-version-type   = text
 cert-sw-version-type   = text
 cert-type-type         = text
 
-cert-dev-type-type-choice /= "PSA Certified - Chip"
-cert-dev-type-type-choice /= "PSA Certified - Device"
-cert-dev-type-type-choice /= "PSA Certified - System Software"
+$cert-dev-type-type-choice /= "PSA Certified - Chip"
+$cert-dev-type-type-choice /= "PSA Certified - Device"
+$cert-dev-type-type-choice /= "PSA Certified - System Software"
