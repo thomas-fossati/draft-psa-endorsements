@@ -108,7 +108,7 @@ There are three basic types of PSA endorsements:
 {: #sec-ref-values}
 
 Reference Values carry measurements and other metadata associated with the
-updatable components in a PSA RoT.  When appraising Evidence, the Verifier
+updatable firmware in a PSA RoT.  When appraising Evidence, the Verifier
 compares Reference Values against the values found in the Software Components
 of the PSA token (see Section 3.4.1 of {{PSA-TOKEN}}).  The PSA RoT
 Implementation ID (see Section 3.2.2 of {{PSA-TOKEN}}) provides the identifier
@@ -152,6 +152,7 @@ in a CoMID identity claim.
 
 The Instance ID is encoded using the `$device-id-type-choice` (0) entry in the `identity-claim-map` with a `tagged-ueid-type` type.
 
+The IAK public key is set in comid.key-material entry in the `identity-claim-map`.
 The IAK public key is encoded as a COSE Key according to Section 7 of
 {{!RFC8152}} and wrapped in the `COSE_KeySet`. The number of items in the
 `COSE_KeySet` MUST be 1.
@@ -183,9 +184,9 @@ expressed by creating a new CoMID Tag for provisioning certification details.
 The certification status is encoded as a CoMID endorsement as follows:
 
 * The Implementation ID of the PSA RoT to which the certification metadata apply is encoded 
-  using the `class-id-type-choice` (2) entry in the `element-name-map` with a `tagged-impl-id` type;
+  using the `$class-id-type-choice` (2) entry in the `element-name-map` with a `tagged-impl-id` type;
 
-* The metadata associated with the certification is encoded in a `comid.psa-cert-meta` structure
+* The metadata associated with the certification is encoded in a `psa-cert-meta-map` structure
   which extends the `endorsed-value-map` through the `$$endorsed-value-map-extension` socket.
   
 * The CoMID MAY contain one or more `linked-tag-map` entries carrying the
@@ -194,16 +195,16 @@ The certification status is encoded as a CoMID endorsement as follows:
 
 A PSA Certification data element has the following attributes:
 
-* `cert-level-type-choice`    : PSA certification level.  Acceptable values are x, y, z...
-* `cert-num-type`             : A unique number for each certificate
-* `cert-issue-date-type`      : Certificate date of issue, formatted as {{!RFC3339}} full-date (e.g., 2020-12-31)
-* `cert-test-lab-type`        : Name of the certification lab
-* `cert-holder-type`          : Name of Organization which holds the certificate
-* `cert-product-type`         : Name of the product been certified
-* `cert-hw-version-type`      : Version of Hardware certified
-* `cert-sw-version-type`      : Version of Software certified
-* `cert-type-type`            : Further details on certification
-* `cert-dev-type-type-choice` : Type of certificate, Chip, Device or System Software
+* `$cert-level-type-choice`    : PSA certification level.  Acceptable values are x, y, z...
+* `cert-num-type`              : A unique number for each certificate
+* `cert-issue-date-type`       : Certificate date of issue, formatted as {{!RFC3339}} full-date (e.g., 2020-12-31)
+* `cert-test-lab-type`         : Name of the certification lab
+* `cert-holder-type`           : Name of Organization which holds the certificate
+* `cert-product-type`          : Name of the product been certified
+* `cert-hw-version-type`       : Version of Hardware certified
+* `cert-sw-version-type`       : Version of Software certified
+* `cert-type-type`             : Further details on certification
+* `$cert-dev-type-type-choice` : Type of certificate, Chip, Device or System Software
 
 The `comid.psa-cert-meta` map is as follows:
 
@@ -211,7 +212,7 @@ The `comid.psa-cert-meta` map is as follows:
 {::include psa-ext/cert-meta.cddl}
 ~~~
 
-The provisioning linkage of Certification CoMID to the RoT CoMID is illustrated in {{fig-cert-link}}.
+The linkage of Certification CoMID to the RoT CoMID is illustrated in {{fig-cert-link}}.
 
 ~~~
 {::include art/cert.txt}
@@ -236,7 +237,7 @@ The example in {{ex-cert-val-link}} shows the link entry to the CoMID tag being 
 
 ## PSA Provisioning Model
 
-Two provisioning models are envisioned, for provisioning PSA Endorsements.
+Two provisioning models are envisioned for provisioning PSA Endorsements.
 
 * Atomic model ({{sec-atmoic}}), where each measured and updatable component of PSA RoT is expressed independently and hence each component has its own upgrade chain.
 
@@ -296,9 +297,9 @@ version number would typically result in a separate product / upgrade chain.
 The Reference Value CoMID of the patching or updating firmware has a
 `linked-tag-entry` map populated as follows:
 
-* key 0 contains the tag identifier of the Reference Value CoMID of the patched
+* comid.linked-tag-id contains the tag identifier of the Reference Value CoMID of the patched
   or updated firmware;
-* key 1 contains one of `comid.patches` or `comid.updates` relations.
+* comid.tag-rel contains one of `comid.patches` or `comid.updates` relations.
 
 {{ex-linked-tag}} provides an example of a Reference Value CoMID patching
 another Reference Value CoMID with tag identifier
