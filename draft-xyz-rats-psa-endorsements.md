@@ -214,7 +214,7 @@ The `comid.psa-cert-meta` map is as follows:
 
 The linkage of Certification CoMID to the RoT CoMID is illustrated in {{fig-cert-link}}.
 
-~~~
+~~~ goat
 {::include art/cert.txt}
 ~~~
 {: #fig-cert-link title="Certification Link to the RoT been certified"}
@@ -325,4 +325,4 @@ TODO
 # Acknowledgements
 {: numbered="no"}
 
-John Mattsson was nice enough to point out the need for this being documented.
+TODO
