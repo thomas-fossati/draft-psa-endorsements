@@ -42,6 +42,8 @@ normative:
   PSA-TOKEN: I-D.tschofenig-rats-psa-token
 
 informative:
+  RATS-ARCH: I-D.ietf-rats-architecture
+
   SEMA-VER:
    target: https://semver.org
    title: Semantic Versioning 2.0.0
@@ -82,7 +84,7 @@ evidence produced by a PSA device {{PSA-TOKEN}}.
 {::boilerplate bcp14}
 
 The reader is assumed to be familiar with the terms defined in Section 2.1 of
-{{PSA-TOKEN}}.
+{{PSA-TOKEN}} and in Section 4 of {{RATS-ARCH}}.
 
 # PSA Endorsements
 {: #sec-psa-endorsements }
