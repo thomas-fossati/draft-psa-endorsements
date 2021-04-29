@@ -1,20 +1,27 @@
-{
-  / comid.element-name /  0 : {
-    / implementation id / 2 : 47115(h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030303031')
+/ concise-mid-tag / {
+  / comid.tag-identity / 1 : {
+    / comid.tag-id / 0 : h'3f06af63a93c11e4979700505690773f'
+  }, 
+
+  / comid.module-name / 2 : {
+    / comid.class-id / 2 :
+      / tagged-impl-id-type / 
+      47115(h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030303031')
   },
 
-  / comid.element-value / 1 : {
-    / digests-entry / 2 : [
-      [
-        / hash-algo  / 1, / sha256 /
-        / hash-value / h'44aa336af4cb14a879432e53dd6571c7fa9bccafb75f488259262d6ea3a4d91b'
-      ]
-    ]
-  },
-
-  / psa-refval-meta / 2 : {
-    / measurement type /   1 : "PRoT",
-    / version /            4 : "1.3.5",
-    / signer id /          5 : h'acbb11c7e4da217205523ce4ce1a245ae1a239ae3c6bfd9e7871f7e5d8bae86b'
+  / comid.claims / 5 : {
+    / comid.reference-claims / 0 : {
+      / comid.element-value / 1 : {
+        / comid.digests / 2 : [
+          / hash-alg-id / 1, / sha256 /
+          / hash-value /  h'44aa336af4cb14a879432e53dd6571c7fa9bccafb75f488259262d6ea3a4d91b'
+        ]
+      },
+      / psa-refval-meta / 2 : {
+        / psa.measurement-type / 1 : "PRoT",
+        / psa.version /          4 : "1.3.5",
+        / psa.signer-id /        5 : h'acbb11c7e4da217205523ce4ce1a245ae1a239ae3c6bfd9e7871f7e5d8bae86b'
+      }
+    }
   }
 }

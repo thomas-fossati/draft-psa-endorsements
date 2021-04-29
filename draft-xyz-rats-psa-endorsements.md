@@ -51,7 +51,12 @@ informative:
      -
        ins: T. Preston-Werner
        name: Tom Preston-Werner
-   date: 2020
+   date: 2021
+
+  PSA-CERTIFIED:
+   target: https://www.psacertified.org
+   title: PSA Certified
+   date: 2021
 
 --- abstract
 
@@ -106,24 +111,44 @@ There are three basic types of PSA endorsements:
 * Certification Claims ({{sec-certificates}}), i.e., metadata that describe
   the certification status associated with a PSA device.
 
+Each type is encoded using a separate CoMID.
+
+## PSA RoT Identification
+{: #sec-impl-id}
+
+Each PSA Endorsement is associated with a well defined immutable PSA RoT.  The
+unique identifier of such PSA RoT, known as the Implementation ID (see Section
+3.2.2 of {{PSA-TOKEN}}), MUST be encoded in the top-level `element-name-map`
+(2) of the CoMID using the `$class-id-type-choice` (2) entry with type
+`tagged-impl-id`, as shown in {{ex-implementation-id}}.  Note that this implies
+that each CoMID is scoped to one and one only PSA RoT or, in other words, that
+there cannot be two Endorsements for different PSA RoTs in the same CoMID.
+
+~~~
+{::include examples/implementation-id.diag}
+~~~
+{: #ex-implementation-id title="Example Implementation ID"}
+
 ## Reference Values
 {: #sec-ref-values}
 
 Reference Values carry measurements and other metadata associated with the
 updatable firmware in a PSA RoT.  When appraising Evidence, the Verifier
 compares Reference Values against the values found in the Software Components
-of the PSA token (see Section 3.4.1 of {{PSA-TOKEN}}).  The PSA RoT
-Implementation ID (see Section 3.2.2 of {{PSA-TOKEN}}) provides the identifier
-for the module to which the measurements are attached.
+of the PSA token (see Section 3.4.1 of {{PSA-TOKEN}}).
 
-Each measurement is encoded in a CoMID reference value.  Specifically:
+Each measurement is encoded in a `reference-claim-map` (0) entry inside the
+top-level `claims-map` (5).  Specifically:
 
-* The Implementation ID is encoded using the `$class-id-type-choice` (2) entry in the
-  `element-name-map` with a `tagged-impl-id` type;
-* The raw measurement is encoded in the `digests-entry` in the `element-value`
-  map;
+* The raw measurement is encoded in the `digests-type` (2) of the
+  `element-value-map` (1).  The `digests-type` array MAY contain more than one
+  entry if multiple digests of the same measured component exist (obtained with
+  different hash algorithms).
 * The metadata associated with the measurement are encoded in a
-  `psa-refval-meta` structure which extends the `reference-value` map
+  `psa-refval-meta` structure which extends the
+  `$$reference-claim-map-extension` socket.
+* The optional `element-name-map` (0) MUST NOT be set by a producer and MUST be
+  ignored by a consumer.
 
 The `psa-refval-meta` map is as follows:
 
@@ -134,8 +159,13 @@ The `psa-refval-meta` map is as follows:
 The semantics of the codepoints in the `psa-refval-meta` map is the same as the
 `psa-software-component` map defined in Section 3.4.1 of {{PSA-TOKEN}}.
 
-The example in {{ex-reference-value}} shows a CoMID reference value carrying a
-firmware measurement associated with Implementation ID
+A single CoMID can carry one or more Reference Values depending on the chosen
+provisioning model (see {{sec-provisioning-model}}).  All the Reference Values
+that are found in a CoMID MUST be associated with the same Implementation ID,
+encoded in the root CoMID as described in {{sec-impl-id}}.
+
+The example in {{ex-reference-value}} shows the PSA Endorsement of type
+Reference Value for a firmware measurement associated with Implementation ID
 `acme-implementation-id-000000001`.
 
 ~~~
@@ -143,44 +173,46 @@ firmware measurement associated with Implementation ID
 ~~~
 {: #ex-reference-value title="Example Reference Value"}
 
-## Identity
+## Identity Claims
 {: #sec-identity}
 
-Identity Claims carry the verification key associated with the Initial
-Attestation Key (IAK) of a PSA device.
+An Identity Claim carries the verification key associated with the Initial
+Attestation Key (IAK) of a PSA device.  Each verification key is provided
+alongside the corresponding device Instance ID in an `identity-claim-map` (2)
+entry inside the top-level `claims-map` (5).  Specifically:
 
-Each verification key is encoded alongside the corresponding device Instance ID
-in a CoMID identity claim.
+* The Instance ID is encoded using the `$device-id-type-choice` (1) entry in
+  the `identity-claim-map` with a `tagged-ueid-type` type.
+* The IAK public key is set in the `COSE_KeySet` (2) entry in the
+  `identity-claim-map`.  The IAK public key is encoded as a COSE Key according
+  to Section 7 of {{!RFC8152}} and wrapped in the `COSE_KeySet`. The number of
+  items in the `COSE_KeySet` MUST be 1.
+* The optional `element-name-map` (0) MUST NOT be set by a producer and MUST be
+  ignored by a consumer.
 
-The Instance ID is encoded using the `$device-id-type-choice` (0) entry in the `identity-claim-map` with a `tagged-ueid-type` type.
+A single CoMID can carry more than one Identity Claim at a time, for example to
+efficiently supply batches of verification keys associated with a given device
+class.  All the Identity Claims that are found in a CoMID MUST be associated
+with the same Implementation ID, encoded in the root CoMID as described in
+{{sec-impl-id}}.
 
-The IAK public key is set in the `COSE_KeySet` (1) entry in the `identity-claim-map`.
-The IAK public key is encoded as a COSE Key according to Section 7 of
-{{!RFC8152}} and wrapped in the `COSE_KeySet`. The number of items in the
-`COSE_KeySet` MUST be 1.
-
-The example in {{ex-identity-claim}} shows a CoMID identity claim carrying a
-secp256r1 EC public IAK associated with Instance ID `4ca3...d296`.
-
-An Identity CoMID can carry as many Identity Claims as needed.
+The example in {{ex-identity-claim}} shows the PSA Endorsement of type Identity
+Claim carrying a secp256r1 EC public IAK associated with Instance ID
+`4ca3...d296`.
 
 ~~~
 {::include examples/instance-pub.diag}
 ~~~
 {: #ex-identity-claim title="Example Identity Claim"}
 
-
 ## Certification
 {: #sec-certificates}
 
-A PSA Certification can certify PSA hardware, software RoT or the complete device.
-Specifically, it can certify one of the following:
+PSA Certified {{PSA-CERTIFIED}} defines a certification scheme for the PSA ecosystem.
 
-* The underlying platform, identified by the Impementation ID;
-* One or more firmware components of the mutable PSA RoT;
-* The entire PSA device.
+A PSA Certified Security Assurance Certificate (SAC) may apply to a hardware component, a software component, or an entire device.
 
-A PSA Certification claim contains the metadata about the certificate. The claim is 
+A SAC contains the metadata about the certification and has a unique identifier. The claim is 
 expressed by creating a new CoMID Tag for provisioning certification details.
 
 The certification status is encoded as a CoMID endorsement as follows:
@@ -238,10 +270,11 @@ The example in {{ex-cert-val-link}} shows the link entry to the CoMID tag being 
 {: #ex-cert-val-link title="Example Certification CoMID Linkage"}
 
 ## PSA Provisioning Model
+{: #sec-provisioning-model}
 
 Two provisioning models are envisioned for provisioning PSA Endorsements.
 
-* Atomic model ({{sec-atmoic}}), where each measured and updatable component of PSA RoT is expressed independently and hence each component has its own upgrade chain.
+* Atomic model ({{sec-atomic}}), where each measured and updatable component of PSA RoT is expressed independently and hence each component has its own upgrade chain.
 
 * Bundled model ({{sec-bundled}}), where all the measured and updatable components of a PSA RoT are bundled together and are treated as single entity from the point of view of upgrade chain.
 
@@ -249,7 +282,7 @@ The choice between atomic and bundled model depends upon the use case and indivi
 before provisioning the endorsements.
 
 ### Atomic
-{: #sec-atmoic}
+{: #sec-atomic}
 In an atomic provisioning model, measurements for each firmware component associated with a hardware RoT is conveyed using a unique CoMID tag. Each tag contains the identifier for the platform RoT associated to the PSA device.
 This enables the verifier to link all the firmware components belonging to the same platform and model them as a collection of nodes in a graph.
 
