@@ -191,7 +191,7 @@ entry inside the top-level `claims-map` (5).  Specifically:
 * The optional `element-name-map` (0) MUST NOT be set by a producer and MUST be
   ignored by a consumer.
 
-A single CoMID can carry more than one Identity Claim at a time, for example to
+A single CoMID can carry one or more Identity Claims, for example to
 efficiently supply batches of verification keys associated with a given device
 class.  All the Identity Claims that are found in a CoMID MUST be associated
 with the same Implementation ID, encoded in the root CoMID as described in
