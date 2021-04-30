@@ -121,7 +121,7 @@ Claim, is associated with a well defined immutable PSA RoT.  The association
 between a PSA Endorsement and its PSA RoT is obtained by means of the unique
 PSA RoT identifier, known as Implementation ID (see Section 3.2.2 of
 {{PSA-TOKEN}}).  The Implementation ID MUST be encoded in the top-level
-element-name-map (2) of the CoMID using the `$class-id-type-choice` (2) entry
+`element-name-map` (2) of the CoMID using the `$class-id-type-choice` (2) entry
 with type `tagged-impl-id`, as shown in {{ex-implementation-id}}.  Note that
 this implies that each CoMID is scoped to one and only one PSA RoT.
 
