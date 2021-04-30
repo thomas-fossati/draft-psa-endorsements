@@ -178,9 +178,14 @@ Reference Value for a firmware measurement associated with Implementation ID
 {: #sec-identity}
 
 An Identity Claim carries the verification key associated with the Initial
-Attestation Key (IAK) of a PSA device.  Each verification key is provided
-alongside the corresponding device Instance ID in an `identity-claim-map` (2)
-entry inside the top-level `claims-map` (5).  Specifically:
+Attestation Key (IAK) of a PSA device.  When appraising Evidence, the Verifier
+uses the Instance ID claim (see Section 3.2.1 of {{PSA-TOKEN}}) to retrieve the
+verification key that it must use to check the signature on the Evidence.  This
+allows the Verifier to prove (or disprove) the Attester's claimed identity.
+
+Each verification key is provided alongside the corresponding device Instance
+ID in an `identity-claim-map` (2) entry inside the top-level `claims-map` (5).
+Specifically:
 
 * The Instance ID is encoded using the `$device-id-type-choice` (1) entry in
   the `identity-claim-map` with a `tagged-ueid-type` type.
@@ -194,8 +199,7 @@ entry inside the top-level `claims-map` (5).  Specifically:
 A single CoMID can carry one or more Identity Claims, for example to
 efficiently supply batches of verification keys associated with a given device
 class.  All the Identity Claims that are found in a CoMID MUST be associated
-with the same Implementation ID, encoded in the root CoMID as described in
-{{sec-impl-id}}.
+with the same Implementation ID as described in {{sec-impl-id}}.
 
 The example in {{ex-identity-claim}} shows the PSA Endorsement of type Identity
 Claim carrying a secp256r1 EC public IAK associated with Instance ID
@@ -206,69 +210,57 @@ Claim carrying a secp256r1 EC public IAK associated with Instance ID
 ~~~
 {: #ex-identity-claim title="Example Identity Claim"}
 
-## Certification
+## Certification Claims
 {: #sec-certificates}
 
-PSA Certified {{PSA-CERTIFIED}} defines a certification scheme for the PSA ecosystem.
+PSA Certified {{PSA-CERTIFIED}} defines a certification scheme for the PSA
+ecosystem.  A product - either a hardware component, a software component, or
+an entire device - that is verified to meet the security criteria established
+by the PSA Certified scheme is warranted a PSA Certified Security Assurance
+Certificate (SAC).  A SAC contains information about the certification of a
+certain product (e.g., the target system, the attained certification level, the
+test lab that conducted the evaluation, etc.), and has a unique Certificate
+Number.
 
-A PSA Certified Security Assurance Certificate (SAC) may apply to a hardware component, a software component, or an entire device.
+The linkage between a PSA RoT and a related SAC is provided by a Certification
+Claim, which binds the PSA RoT Implementation ID with the SAC unique
+Certificate Number.  When appraising Evidence, the Verifier can use the
+Certification Claims associated with the identified Attester as ancillary input
+to the Appraisal Policy, or to enrich the produced Attestation Result.
 
-A SAC contains the metadata about the certification and has a unique identifier. The claim is 
-expressed by creating a new CoMID Tag for provisioning certification details.
+A Certification Claim is encoded in an `endorsed-claim-map` (1) entry inside the
+top-level `claims-map` (5).  Specifically:
 
-The certification status is encoded as a CoMID endorsement as follows:
+* The unique Certificate Number is encoded in a `psa-cert-num-type` which
+  extends the `$$endorsed-claim-map-extension` socket.
+* The optional `element-name-map` (0) and `element-value-map` (1) MUST NOT be
+  set by a producer and MUST be ignored by a consumer.
 
-* The Implementation ID of the PSA RoT to which the certification metadata apply is encoded 
-  using the `$class-id-type-choice` (2) entry in the `element-name-map` with a `tagged-impl-id` type;
+A single CoMID can carry one or more Certification Claims.  All the
+Certification Claims that are found in a CoMID MUST be associated with the same
+Implementation ID as described in {{sec-impl-id}}.
 
-* The metadata associated with the certification is encoded in a `psa-cert-meta-map` structure
-  which extends the `endorsed-value-map` through the `$$endorsed-value-map-extension` socket.
-  
-* The CoMID MAY contain one or more `linked-tag-map` entries carrying the
-  tag id of the CoMID corresponding to the certified module with `$tag-rel-type-choice` set to `comid.supplements`,
-  as illustrated in {{fig-cert-link}}.
+The CoMID MAY contain one or more `linked-tag-map` entries carrying the tag id
+of the CoMID(s) associated with the module(s) to which the Certification Claim
+applies.  The `$tag-rel-type-choice` MUST be set to `comid.supplements`, as
+illustrated in {{ex-certification-claim}}.
 
-A PSA Certification data element has the following attributes:
-
-* `$cert-level-type-choice`    : PSA certification level
-* `cert-num-type`              : A unique number for each certificate
-* `cert-issue-date-type`       : Certificate date of issue, formatted as {{!RFC3339}} full-date (e.g., 2020-12-31)
-* `cert-test-lab-type`         : Name of the certification lab
-* `cert-holder-type`           : Name of Organization which holds the certificate
-* `cert-product-type`          : Name of the product been certified
-* `cert-hw-version-type`       : Version of Hardware certified
-* `cert-sw-version-type`       : Version of Software certified
-* `cert-type-type`             : Further details on certification
-* `$cert-dev-type-type-choice` : Type of certificate, Chip, Device or System Software
-
-The `comid.psa-cert-meta` map is as follows:
+The `psa-cert-num-type` is as follows:
 
 ~~~
-{::include psa-ext/cert-meta.cddl}
+{::include psa-ext/cert-num.cddl}
 ~~~
 
-The linkage of Certification CoMID to the RoT CoMID is illustrated in {{fig-cert-link}}.
-
-~~~ goat
-{::include art/cert.txt}
-~~~
-{: #fig-cert-link title="Certification Link to the RoT been certified"}
-
-The example in {{ex-cert-ext}} shows a CoMID endorsement claim carrying
-certification metadata associated to Implementation ID
-`acme-implementation-id-000000001`.
+The example in {{ex-certification-claim}} shows a PSA Endorsement of type
+Certification Claim for Certificate Number `1234567890123 - 12345` and
+Implementation ID `acme-implementation-id-000000001`.  The CoMID also includes
+an explicit link to the supplemented Reference Value CoMID with tag id
+`3f06af63-a93c-11e4-9797-00505690773f`.
 
 ~~~
 {::include examples/cert-val.diag}
 ~~~
-{: #ex-cert-ext title="Example Certification Claim"}
-
-The example in {{ex-cert-val-link}} shows the link entry to the CoMID tag being supplemented with certification information.
-
-~~~
-{::include examples/cert-val-link.diag}
-~~~
-{: #ex-cert-val-link title="Example Certification CoMID Linkage"}
+{: #ex-certification-claim title="Example Certification Claim with `supplement` Link-Relation"}
 
 ## PSA Provisioning Model
 {: #sec-provisioning-model}
