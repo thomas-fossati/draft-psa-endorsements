@@ -162,8 +162,8 @@ The semantics of the codepoints in the `psa-refval-meta` map is the same as the
 
 A single CoMID can carry one or more Reference Values depending on the chosen
 provisioning model (see {{sec-provisioning-model}}).  All the Reference Values
-that are found in a CoMID MUST be associated with the same Implementation ID,
-encoded in the root CoMID as described in {{sec-impl-id}}.
+that are found in a CoMID MUST be associated with the same Implementation ID
+as described in {{sec-impl-id}}.
 
 The example in {{ex-reference-value}} shows the PSA Endorsement of type
 Reference Value for a firmware measurement associated with Implementation ID
