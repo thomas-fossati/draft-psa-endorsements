@@ -1,5 +1,7 @@
+comid.psa-refval-meta = 2
+
 $$reference-claim-map-extension //= (
-  2 => psa-refval-meta
+  comid.psa-refval-meta => psa-refval-meta
 )
 
 psa.measurement-type = 1
