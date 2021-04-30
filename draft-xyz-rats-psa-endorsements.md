@@ -113,7 +113,7 @@ There are three basic types of PSA endorsements:
 
 Each type is encoded using a separate CoMID.
 
-## PSA RoT Identification
+## PSA Endorsements to PSA RoT Linkage
 {: #sec-impl-id}
 
 Each PSA Endorsement, be it a Reference Value, Identity Claim or Certification
