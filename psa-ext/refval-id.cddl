@@ -1,0 +1,13 @@
+psa-refval-id = {
+  ? psa.measurement-type => text
+  ? psa.version => text
+    psa.signer-id => psa.hash-type
+  ? psa.measurement-desc => text
+}
+
+psa.hash-type = bytes .size 32 / bytes .size 48 / bytes .size 64
+
+psa.measurement-type = 1
+psa.version = 4
+psa.signer-id = 5
+psa.measurement-desc = 6

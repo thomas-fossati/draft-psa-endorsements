@@ -105,30 +105,32 @@ There are three basic types of PSA endorsements:
 
 * Reference Values ({{sec-ref-values}}), i.e., measurements of the PSA RoT
   firmware;
-* Identity Claims ({{sec-identity}}), i.e., cryptographic keys that can be used
-  to verify signed Evidence produced by the PSA RoT and the associated identifiers that
-  bind the keys to their device instances.
+* Attestation Verification Claims ({{sec-identity}}), i.e., cryptographic keys
+  that can be used to verify signed Evidence produced by the PSA RoT and the
+  associated identifiers that bind the keys to their device instances.
 * Certification Claims ({{sec-certificates}}), i.e., metadata that describe
   the certification status associated with a PSA device.
-
-Each type is encoded using a separate CoMID.
 
 ## PSA Endorsements to PSA RoT Linkage
 {: #sec-impl-id}
 
-Each PSA Endorsement, be it a Reference Value, Identity Claim or Certification
-Claim, is associated with a well defined immutable PSA RoT.  The association
-between a PSA Endorsement and its PSA RoT is obtained by means of the unique
-PSA RoT identifier, known as Implementation ID (see Section 3.2.2 of
-{{PSA-TOKEN}}).  The Implementation ID MUST be encoded in the top-level
-`element-name-map` (2) of the CoMID using the `$class-id-type-choice` (2) entry
-with type `tagged-impl-id`, as shown in {{ex-implementation-id}}.  Note that
-this implies that each CoMID is scoped to one and only one PSA RoT.
+Each PSA Endorsement, be it a Reference Value, Attestation Verification Claim
+or Certification Claim, is associated with a well defined immutable PSA RoT.
+The association between a PSA Endorsement and its PSA RoT is obtained by means
+of the unique PSA RoT identifier, known as Implementation ID (see Section 3.2.2
+of {{PSA-TOKEN}}).  Besides, a PSA Endorsement can be associated with a
+specific instance of a certain PSA RoT - as in the case of Attestation
+Verification Claims.  The association between a PSA Endorsement and the PSA RoT
+instance is obtained by means of the unique Instance ID (see Section 3.2.1 of
+{{PSA-TOKEN}}).
+
+These identifiers are typically found in the subject of a CoMID triple, encoded
+in an `environment-map` type as shown in {{ex-psa-rot-id}}.
 
 ~~~
-{::include examples/implementation-id.diag}
+{::include examples/psa-rot-identification.diag}
 ~~~
-{: #ex-implementation-id title="Example Implementation ID"}
+{: #ex-psa-rot-id title="Example PSA RoT Identification" }
 
 ## Reference Values
 {: #sec-ref-values}
@@ -138,26 +140,33 @@ updatable firmware in a PSA RoT.  When appraising Evidence, the Verifier
 compares Reference Values against the values found in the Software Components
 of the PSA token (see Section 3.4.1 of {{PSA-TOKEN}}).
 
-Each measurement is encoded in a `reference-claim-map` (0) entry inside the
-top-level `claims-map` (5).  Specifically:
+Each measurement is encoded in a `measurement-map` of a CoMID
+`reference-triple-record`.  Since a `measurement-map` can encode one or more
+measurements, a single `reference-triple-record` can carry as many measurements
+as needed, provided they belong to the same PSA RoT.
 
-* The raw measurement is encoded in the `digests-type` (2) of the
-  `element-value-map` (1).  The `digests-type` array MAY contain more than one
-  entry if multiple digests of the same measured component exist (obtained with
-  different hash algorithms).
-* The metadata associated with the measurement are encoded in a
-  `psa-refval-meta` structure which extends the
-  `$$reference-claim-map-extension` socket.
-* The optional `element-name-map` (0) MUST NOT be set by a producer and MUST be
-  ignored by a consumer.
-
-The `psa-refval-meta` map is as follows:
+The identifier of a measurement is encoded in a `psa-refval-id` object as follows:
 
 ~~~
-{::include psa-ext/refval-meta.cddl}
+{::include psa-ext/refval-id.cddl}
 ~~~
 
-The semantics of the codepoints in the `psa-refval-meta` map is the same as the
+In order to support PSA Reference Value identifiers, the
+`$measured-element-type-choice` CoMID type is extended as follows:
+
+~~~
+{::include psa-ext/refval-id-ext.cddl}
+~~~
+
+and automatically bound to the `comid.mkey` in the `measurement-map`.
+
+The raw measurement is encoded in a `digests-type` object in the
+`measurements-value-map`.  The `digests-type` array MUST contain only one
+entry.  If multiple digests of the same measured component exist (obtained with
+different hash algorithms), a different `psa.measurement-desc` MUST be used in
+the identifier.
+
+The semantics of the codepoints in the `psa-refval-id` map is the same as the
 `psa-software-component` map defined in Section 3.4.1 of {{PSA-TOKEN}}.
 
 A single CoMID can carry one or more Reference Values depending on the chosen
