@@ -83,7 +83,6 @@ PSA Endorsements comprise reference values, cryptographic key material and
 certification related information that needs to be provisioned in a Verifier so that in can appraise
 evidence produced by a PSA device {{PSA-TOKEN}}.
 
-
 # Conventions and Definitions
 
 {::boilerplate bcp14}
@@ -105,27 +104,26 @@ There are three basic types of PSA endorsements:
 
 * Reference Values ({{sec-ref-values}}), i.e., measurements of the PSA RoT
   firmware;
-* Attestation Verification Claims ({{sec-identity}}), i.e., cryptographic keys
-  that can be used to verify signed Evidence produced by the PSA RoT and the
-  associated identifiers that bind the keys to their device instances.
+* Attestation Verification Claims ({{sec-keys}}), i.e., cryptographic keys
+  that can be used to verify signed Evidence produced by the PSA RoT, along
+  with the identifiers that bind the keys to their device instances;
 * Certification Claims ({{sec-certificates}}), i.e., metadata that describe
   the certification status associated with a PSA device.
 
 ## PSA Endorsements to PSA RoT Linkage
 {: #sec-impl-id}
 
-Each PSA Endorsement, be it a Reference Value, Attestation Verification Claim
-or Certification Claim, is associated with a well defined immutable PSA RoT.
-The association between a PSA Endorsement and its PSA RoT is obtained by means
-of the unique PSA RoT identifier, known as Implementation ID (see Section 3.2.2
-of {{PSA-TOKEN}}).  Besides, a PSA Endorsement can be associated with a
-specific instance of a certain PSA RoT - as in the case of Attestation
-Verification Claims.  The association between a PSA Endorsement and the PSA RoT
-instance is obtained by means of the unique Instance ID (see Section 3.2.1 of
-{{PSA-TOKEN}}).
+Each PSA Endorsement - be it a Reference Value, Attestation Verification Claim
+or Certification Claim - is associated with an immutable PSA RoT.  A PSA
+Endorsement is associated to its PSA RoT by means of the unique PSA RoT
+identifier known as Implementation ID (see Section 3.2.2 of {{PSA-TOKEN}}).
+Besides, a PSA Endorsement can be associated with a specific instance of a
+certain PSA RoT - as in the case of Attestation Verification Claims.  A PSA
+Endorsement is associated with a PSA RoT instance by means of the Instance ID
+(see Section 3.2.1 of {{PSA-TOKEN}}) and its "parent" Implementation ID.
 
 These identifiers are typically found in the subject of a CoMID triple, encoded
-in an `environment-map` type as shown in {{ex-psa-rot-id}}.
+in an `environment-map` as shown in {{ex-psa-rot-id}}.
 
 ~~~
 {::include examples/psa-rot-identification.diag}
@@ -143,13 +141,19 @@ of the PSA token (see Section 3.4.1 of {{PSA-TOKEN}}).
 Each measurement is encoded in a `measurement-map` of a CoMID
 `reference-triple-record`.  Since a `measurement-map` can encode one or more
 measurements, a single `reference-triple-record` can carry as many measurements
-as needed, provided they belong to the same PSA RoT.
+as needed, provided they belong to the same PSA RoT carried in the subject of
+the "reference value" triple.
 
-The identifier of a measurement is encoded in a `psa-refval-id` object as follows:
+The identifier of a measurement is encoded in a `psa-refval-id` object as
+follows:
 
 ~~~
 {::include psa-ext/refval-id.cddl}
 ~~~
+
+The semantics of the codepoints in the `psa-refval-id` map are equivalent to
+those in the `psa-software-component` map defined in Section 3.4.1 of
+{{PSA-TOKEN}}.
 
 In order to support PSA Reference Value identifiers, the
 `$measured-element-type-choice` CoMID type is extended as follows:
@@ -166,14 +170,6 @@ entry.  If multiple digests of the same measured component exist (obtained with
 different hash algorithms), a different `psa.measurement-desc` MUST be used in
 the identifier.
 
-The semantics of the codepoints in the `psa-refval-id` map is the same as the
-`psa-software-component` map defined in Section 3.4.1 of {{PSA-TOKEN}}.
-
-A single CoMID can carry one or more Reference Values depending on the chosen
-provisioning model (see {{sec-provisioning-model}}).  All the Reference Values
-that are found in a CoMID MUST be associated with the same Implementation ID
-as described in {{sec-impl-id}}.
-
 The example in {{ex-reference-value}} shows the PSA Endorsement of type
 Reference Value for a firmware measurement associated with Implementation ID
 `acme-implementation-id-000000001`.
@@ -183,8 +179,8 @@ Reference Value for a firmware measurement associated with Implementation ID
 ~~~
 {: #ex-reference-value title="Example Reference Value"}
 
-## Identity Claims
-{: #sec-identity}
+## Attestation Verification Claims
+{: #sec-keys}
 
 An Identity Claim carries the verification key associated with the Initial
 Attestation Key (IAK) of a PSA device.  When appraising Evidence, the Verifier
