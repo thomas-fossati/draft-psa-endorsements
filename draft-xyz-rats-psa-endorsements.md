@@ -111,7 +111,7 @@ There are three basic types of PSA endorsements:
   the certification status associated with a PSA device.
 
 ## PSA Endorsements to PSA RoT Linkage
-{: #sec-impl-id}
+{: #sec-psa-rot-id}
 
 Each PSA Endorsement - be it a Reference Value, Attestation Verification Claim
 or Certification Claim - is associated with an immutable PSA RoT.  A PSA
@@ -182,38 +182,33 @@ Reference Value for a firmware measurement associated with Implementation ID
 ## Attestation Verification Claims
 {: #sec-keys}
 
-An Identity Claim carries the verification key associated with the Initial
-Attestation Key (IAK) of a PSA device.  When appraising Evidence, the Verifier
-uses the Instance ID claim (see Section 3.2.1 of {{PSA-TOKEN}}) to retrieve the
-verification key that it must use to check the signature on the Evidence.  This
-allows the Verifier to prove (or disprove) the Attester's claimed identity.
+An Attestation Verification Claim carries the verification key associated with
+the Initial Attestation Key (IAK) of a PSA device.  When appraising Evidence,
+the Verifier uses the Implementation ID and Instance ID claims (see
+{{sec-psa-rot-id}}) to retrieve the verification key that it must use to check
+the signature on the Evidence.  This allows the Verifier to prove (or disprove)
+the Attester's claimed identity.
 
 Each verification key is provided alongside the corresponding device Instance
-ID in an `identity-claim-map` (2) entry inside the top-level `claims-map` (5).
-Specifically:
+and Implementation IDs in an `attest-key-triple-record`.  Specifically:
 
-* The Instance ID is encoded using the `$device-id-type-choice` (1) entry in
-  the `identity-claim-map` with a `tagged-ueid-type` type.
-* The IAK public key is set in the `COSE_KeySet` (2) entry in the
-  `identity-claim-map`.  The IAK public key is encoded as a COSE Key according
-  to Section 7 of {{!RFC8152}} and wrapped in the `COSE_KeySet`. The number of
-  items in the `COSE_KeySet` MUST be 1.
-* The optional `element-name-map` (0) MUST NOT be set by a producer and MUST be
+* The Instance and Implementation IDs are encoded in the environment-map as
+  shown in {{ex-psa-rot-id}};
+* The IAK public key is carried in the `comid.key` entry in the
+  `verification-key-map`.  The IAK public key is encoded as a COSE_Key
+  according to Section 7 of {{!RFC8152}}. There MUST be only one
+  `verification-key-map` in an `identity-triple-record`;
+* The optional `comid.keychain` entry MUST NOT be set by a producer and MUST be
   ignored by a consumer.
 
-A single CoMID can carry one or more Identity Claims, for example to
-efficiently supply batches of verification keys associated with a given device
-class.  All the Identity Claims that are found in a CoMID MUST be associated
-with the same Implementation ID as described in {{sec-impl-id}}.
-
-The example in {{ex-identity-claim}} shows the PSA Endorsement of type Identity
-Claim carrying a secp256r1 EC public IAK associated with Instance ID
-`4ca3...d296`.
+The example in {{ex-attestation-verification-claim}} shows the PSA Endorsement
+of type Attestation Verification Claim carrying a secp256r1 EC public IAK
+associated with Instance ID `4ca3...d296`.
 
 ~~~
 {::include examples/instance-pub.diag}
 ~~~
-{: #ex-identity-claim title="Example Identity Claim"}
+{: #ex-attestation-verification-claim title="Example Attestation Verification Claim"}
 
 ## Certification Claims
 {: #sec-certificates}
@@ -243,7 +238,7 @@ top-level `claims-map` (5).  Specifically:
 
 A single CoMID can carry one or more Certification Claims.  All the
 Certification Claims that are found in a CoMID MUST be associated with the same
-Implementation ID as described in {{sec-impl-id}}.
+Implementation ID as described in {{sec-psa-rot-id}}.
 
 The CoMID MAY contain one or more `linked-tag-map` entries carrying the tag id
 of the CoMID(s) associated with the module(s) to which the Certification Claim
