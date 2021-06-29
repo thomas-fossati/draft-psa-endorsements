@@ -91,7 +91,7 @@ cryptographic key material needed to verify Evidence signed by the device's PSA
 RoT. Additionally, PSA Endorsements can include information related to the
 certification status of the attesting device.
 
-There are three basic types of PSA endorsements:
+There are three basic types of PSA Endorsements:
 
 * Reference Values ({{sec-ref-values}}), i.e., measurements of the PSA RoT
   firmware;
@@ -100,6 +100,11 @@ There are three basic types of PSA endorsements:
   with the identifiers that bind the keys to their device instances;
 * Certification Claims ({{sec-certificates}}), i.e., metadata that describe
   the certification status associated with a PSA device.
+
+A fourth category of PSA Endorsements is the:
+
+* Endorsements Block List ({{sec-endorsements-block-list}), which is used to
+  invalidate previously provisioned Endorsements.
 
 ## PSA Endorsements to PSA RoT Linkage
 {: #sec-psa-rot-id}
@@ -241,40 +246,18 @@ Certificate Number `1234567890123 - 12345` and Implementation ID
 ~~~
 {: #ex-certification-claim title="Example Certification Claim with `supplement` Link-Relation"}
 
-# Firmware Updates and Patches
-{: #sec-fw-evo}
+## Endorsements Block List
+{: #sec-endorsements-block-list}
 
-Firmware measurements that are part of the same upgrade chain can be linked
-together using one of `psa-fw-patch-triple-record` ({{sec-fw-patch}}) or
-`psa-fw-update-triple-record` ({{sec-fw-update}}), depending on the precise
-nature of their relationship.  For example, if using semantic versioning
-{{SEMA-VER}}, a bump in the MINOR version number would be associated with a
-`psa-fw-update-triple-record`, whereas an increase in the PATCH indicator would
-have a corresponding `psa-fw-patch-triple-record` involving the patching and
-patched components.  Note that when using semantic versioning, a
-`psa-fw-update-triple-record` would only occur between firmware measurements
-that have PATCH number 0 and "adjacent" MINOR numbers as illustrated in
-{{fig-updates-patches}}.  Changing the MAJOR version number would typically
-result in a separate product / upgrade chain.
+The following three "blocklist" claims:
 
-~~~ goat
-{::include art/updates-patches.txt}
-~~~
-{: #fig-updates-patches title="Updates, Patches and Semantic Versioning"}
+* `reference-blocklist-triple`
+* `attest-key-blocklist-triple`
+* `cert-blocklist-triple`
 
-## Firmware Patch Claim
-{: #sec-fw-patch}
-
-~~~
-{::include psa-ext/patch.cddl}
-~~~
-
-## Firmware Update Claim
-{: #sec-fw-update}
-
-## Example
-
-TODO
+are defined with the same syntax but opposite semantics with regards to their
+"positive" counterparts to allow removing previously provisioned endorsements
+from the acceptable set.
 
 # Security Considerations
 
