@@ -1,7 +1,0 @@
-comid.psa-cert-num = 2
-
-$$endorsed-claim-map-extension //= (
-  comid.psa-cert-num => psa-cert-num-type
-)
-
-psa-cert-num-type = text .regexp "[0-9]{13} - [0-9]{5}"

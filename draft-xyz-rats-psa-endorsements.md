@@ -61,27 +61,18 @@ informative:
 --- abstract
 
 PSA Endorsements comprise reference values, cryptographic key material and
-certification status information that a Verifier needs in order to appraise PSA
-Evidence.
-
-This memo describes the data formats used to convey PSA Endorsements to an Attestation Verifier.
-The format presented in this document is a PSA specific profile of CoRIM/CoMID based information model presented in
-Trusted Computing Group (TCG) Endorsement Architecture.
+certification status information that a Verifier needs in order to appraise
+attestation Evidence produced by a PSA device.  This memo defines such PSA
+Endorsements as a profile of the CoRIM data model.
 
 --- middle
 
 # Introduction
 
-TCG has defined an Endorsement Architecture. This architecture defines an information model that represents a composition of a device which comprises various hardware, embedded firmware and software elements and their associated endorsements.
-In this model, any Hardware and Firmware specific endorsements and certification information metadata are conveyed using Concise Module ID (CoMID) tag. CoMID tag is an abstraction of HW and FW endorsements and certification metadata.
-
-The CoMIDs are bundled together in a CoRIM as a manifest by the Endorser, so that it can be provisioned in a verifier.
-
-This memo profiles and extends the CoMID data model to accommodate PSA specific requirements.
-
 PSA Endorsements comprise reference values, cryptographic key material and
-certification related information that needs to be provisioned in a Verifier so that in can appraise
-evidence produced by a PSA device {{PSA-TOKEN}}.
+certification status information that a Verifier needs in order to appraise
+attestation Evidence produced by a PSA device {{PSA-TOKEN}}.  This memo defines
+such PSA Endorsements as a profile of the CoRIM data model [TBD-CoRIM-ref].
 
 # Conventions and Definitions
 
@@ -228,115 +219,58 @@ Certificate Number.  When appraising Evidence, the Verifier can use the
 Certification Claims associated with the identified Attester as ancillary input
 to the Appraisal Policy, or to enrich the produced Attestation Result.
 
-A Certification Claim is encoded in an `endorsed-claim-map` (1) entry inside the
-top-level `claims-map` (5).  Specifically:
-
-* The unique Certificate Number is encoded in a `psa-cert-num-type` which
-  extends the `$$endorsed-claim-map-extension` socket.
-* The optional `element-name-map` (0) and `element-value-map` (1) MUST NOT be
-  set by a producer and MUST be ignored by a consumer.
-
-A single CoMID can carry one or more Certification Claims.  All the
-Certification Claims that are found in a CoMID MUST be associated with the same
-Implementation ID as described in {{sec-psa-rot-id}}.
-
-The CoMID MAY contain one or more `linked-tag-map` entries carrying the tag id
-of the CoMID(s) associated with the module(s) to which the Certification Claim
-applies.  The `$tag-rel-type-choice` MUST be set to `comid.supplements`, as
-illustrated in {{ex-certification-claim}}.
-
-The `psa-cert-num-type` is as follows:
+A Certification Claim is encoded in an `psa-cert-triple-record`, which extends
+the `$$triples-map-extension` socket, as follows:
 
 ~~~
-{::include psa-ext/cert-num.cddl}
+{::include psa-ext/cert-triple.cddl}
 ~~~
 
-The example in {{ex-certification-claim}} shows a PSA Endorsement of type
-Certification Claim for Certificate Number `1234567890123 - 12345` and
-Implementation ID `acme-implementation-id-000000001`.  The CoMID also includes
-an explicit link to the supplemented Reference Value CoMID with tag id
-`3f06af63-a93c-11e4-9797-00505690773f`.
+* The Implementation ID to which the SAC applies is encoded in the
+  `tagged-impl-id-type`;
+* The unique SAC Certificate Number is encoded in the `psa-cert-num-type`.
+
+A single CoMID can carry one or more Certification Claims.
+
+The example in {{ex-certification-claim}} shows a Certification Claim for
+Certificate Number `1234567890123 - 12345` and Implementation ID
+`acme-implementation-id-000000001`.
 
 ~~~
 {::include examples/cert-val.diag}
 ~~~
 {: #ex-certification-claim title="Example Certification Claim with `supplement` Link-Relation"}
 
-## PSA Provisioning Model
-{: #sec-provisioning-model}
-
-Two provisioning models are envisioned for provisioning PSA Endorsements.
-
-* Atomic model ({{sec-atomic}}), where each measured and updatable component of PSA RoT is expressed independently and hence each component has its own upgrade chain.
-
-* Bundled model ({{sec-bundled}}), where all the measured and updatable components of a PSA RoT are bundled together and are treated as single entity from the point of view of upgrade chain.
-
-The choice between atomic and bundled model depends upon the use case and individual deployment needs. One needs to make a choice at start
-before provisioning the endorsements.
-
-### Atomic
-{: #sec-atomic}
-In an atomic provisioning model, measurements for each firmware component associated with a hardware RoT is conveyed using a unique CoMID tag. Each tag contains the identifier for the platform RoT associated to the PSA device.
-This enables the verifier to link all the firmware components belonging to the same platform and model them as a collection of nodes in a graph.
-
-Each node in the graph is a CoMID, which has a Reference Value Map that contains measurements associated with a specific version of firmware component. Each firmware component can have its own upgrade chain which can be tracked. Each tagged edge is the CoMID-to-CoMID link relation describing an update or patch action on the target node by the source node.
-
-~~~ goat
-{::include art/atomic.txt}
-~~~
-{: #fig-atomic title="Atomic Provisioning Model"}
-
-A limitation of this model is that it may not be able to distinguish between a valid software RoT ( i.e. an
-expected combination of software component versions) from an invalid one.
-
-### Bundled
-{: #sec-bundled}
-In the bundled provisioning model all firmware components associated with a hardware RoT are grouped together in a single
-CoMID tag. The CoMID tag contains the identifier for the platform RoT associated to the PSA device. CoMID tag has a Reference Value Map which is used to carry a list of Reference Values ({{sec-ref-values}}). Each entry in the list carries the measurements associated to a firmware component. This model is applicable if the device firmware is made of separately measurable components however these components are always installed together in a single firmware update operation. In this model, the evolution of the versions of firmware component is collectively tracked using the CoMID updates and patches relations.
-
-~~~ goat
-{::include art/bundled.txt}
-~~~
-{: #fig-bundled title="Bundled Provisioning Model"}
-
-Each tagged edge is the CoMID-to-CoMID link relation describing an
-update or patch action on the target node by the source node.
-
-### Firmware Updates and Patches
-
+# Firmware Updates and Patches
 {: #sec-fw-evo}
 
 Firmware measurements that are part of the same upgrade chain can be linked
-together using one of `comid.patches` or `comid.updates` relations, depending on
-the precise nature of their relationship.  For example, if using semantic
-versioning {{SEMA-VER}}, a bump in the MINOR version number would be associated
-with a `comid.updates` relation, whereas an increase in the PATCH indicator
-would have a corresponding `comid.patches` relation between the involved
-components.  Note that `comid.updates` relations would only occur between
-firmware measurements that have PATCH number 0 and "adjacent" MINOR numbers
-as illustrated in {{fig-updates-patches}}.  Note that changing the MAJOR
-version number would typically result in a separate product / upgrade chain.
+together using one of `psa-fw-patch-triple-record` ({{sec-fw-patch}}) or
+`psa-fw-update-triple-record` ({{sec-fw-update}}), depending on the precise
+nature of their relationship.  For example, if using semantic versioning
+{{SEMA-VER}}, a bump in the MINOR version number would be associated with a
+`psa-fw-update-triple-record`, whereas an increase in the PATCH indicator would
+have a corresponding `psa-fw-patch-triple-record` involving the patching and
+patched components.  Note that when using semantic versioning, a
+`psa-fw-update-triple-record` would only occur between firmware measurements
+that have PATCH number 0 and "adjacent" MINOR numbers as illustrated in
+{{fig-updates-patches}}.  Changing the MAJOR version number would typically
+result in a separate product / upgrade chain.
 
 ~~~ goat
 {::include art/updates-patches.txt}
 ~~~
-{: #fig-updates-patches title="Updates, Patches Relations and Semantic Versioning"}
+{: #fig-updates-patches title="Updates, Patches and Semantic Versioning"}
 
-The Reference Value CoMID of the patching or updating firmware has a
-`linked-tag-entry` map populated as follows:
-
-* comid.linked-tag-id contains the tag identifier of the Reference Value CoMID of the patched
-  or updated firmware;
-* comid.tag-rel contains one of `comid.patches` or `comid.updates` relations.
-
-{{ex-linked-tag}} provides an example of a Reference Value CoMID patching
-another Reference Value CoMID with tag identifier
-`3f06af63-a93c-11e4-9797-00505690773f`.
+## Firmware Patch Claim
+{: #sec-fw-patch}
 
 ~~~
-{::include examples/linked-tag.diag}
+{::include psa-ext/patch.cddl}
 ~~~
-{: #ex-linked-tag title="Example linked tag in a patch Reference Value CoMID"}
+
+## Firmware Update Claim
+{: #sec-fw-update}
 
 ## Example
 
