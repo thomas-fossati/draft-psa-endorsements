@@ -2,11 +2,13 @@
   / comid.class / 0 : {
     / comid.class-id / 0 :
       / tagged-impl-id-type / 47115(
-        h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030303031'
+        h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030
+303031'
       )
   },
   / comid.instance / 1 :
     / tagged-ueid-type / 48000(
-      h'014ca3e4f50bf248c39787020d68ffd05c88767751bf2645ca923f57a98becd296'
+      h'014ca3e4f50bf248c39787020d68ffd05c88767751bf2645ca923f57a98b
+ecd296'
     )
 }

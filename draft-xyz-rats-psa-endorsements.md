@@ -41,17 +41,10 @@ author:
 normative:
   PSA-TOKEN: I-D.tschofenig-rats-psa-token
 
+  CoRIM: I-D.birkholz-rats-corim
+
 informative:
   RATS-ARCH: I-D.ietf-rats-architecture
-
-  SEMA-VER:
-   target: https://semver.org
-   title: Semantic Versioning 2.0.0
-   author:
-     -
-       ins: T. Preston-Werner
-       name: Tom Preston-Werner
-   date: 2021
 
   PSA-CERTIFIED:
    target: https://www.psacertified.org
@@ -60,7 +53,7 @@ informative:
 
 --- abstract
 
-PSA Endorsements comprise reference values, cryptographic key material and
+PSA Endorsements include reference values, cryptographic key material and
 certification status information that a Verifier needs in order to appraise
 attestation Evidence produced by a PSA device.  This memo defines such PSA
 Endorsements as a profile of the CoRIM data model.
@@ -69,10 +62,10 @@ Endorsements as a profile of the CoRIM data model.
 
 # Introduction
 
-PSA Endorsements comprise reference values, cryptographic key material and
+PSA Endorsements include reference values, cryptographic key material and
 certification status information that a Verifier needs in order to appraise
 attestation Evidence produced by a PSA device {{PSA-TOKEN}}.  This memo defines
-such PSA Endorsements as a profile of the CoRIM data model [TBD-CoRIM-ref].
+such PSA Endorsements as a profile of the CoRIM data model {{CoRIM}}.
 
 # Conventions and Definitions
 
@@ -101,10 +94,11 @@ There are three basic types of PSA Endorsements:
 * Certification Claims ({{sec-certificates}}), i.e., metadata that describe
   the certification status associated with a PSA device.
 
-A fourth category of PSA Endorsements is the:
+There is also a fourth category of PSA Endorsements:
 
-* Endorsements Block List ({{sec-endorsements-block-list}), which is used to
-  invalidate previously provisioned Endorsements.
+* Endorsements Block List ({{sec-endorsements-block-list}}),
+
+that is used to invalidate previously provisioned Endorsements.
 
 ## PSA Endorsements to PSA RoT Linkage
 {: #sec-psa-rot-id}
@@ -256,7 +250,7 @@ The following three "blocklist" claims:
 * `cert-blocklist-triple`
 
 are defined with the same syntax but opposite semantics with regards to their
-"positive" counterparts to allow removing previously provisioned endorsements
+"positive" counterparts to allow invalidating previously provisioned endorsements
 from the acceptable set.
 
 # Security Considerations

@@ -8,20 +8,24 @@
         / comid.class / 0 : {
           / comid.class-id / 0 :
             / tagged-impl-id-type / 47115(
-              h'61636d652d696d706c656d656e746174696f6e2d69642d303030303030303031'
+              h'61636d652d696d706c656d656e746174696f6e2d69642d303030
+303030303031'
             )
         },
         / comid.instance / 1 :
           / tagged-ueid-type / 48000(
-            h'014ca3e4f50bf248c39787020d68ffd05c88767751bf2645ca923f57a98becd296'
+            h'014ca3e4f50bf248c39787020d68ffd05c88767751bf2645ca923f
+57a98becd296'
           )
       },
       / verification-key-map / {
         / comid.key / 0 : {
           / kty /  1 : 2, / EC2 /
           / crv / -1 : 1, / P-256 /
-          / x /   -2 : h'30a0424cd21c2944838a2d75c92b37e76ea20d9f00893a3b4eee8a3c0aaf',
-          / y /   -3 : h'e04b65e92456d9888b52b379bdfbd51ee869ef1f0fc65b6659695b6cce08'
+          / x /   -2 : h'30a0424cd21c2944838a2d75c92b37e76ea20d9f008
+93a3b4eee8a3c0aaf',
+          / y /   -3 : h'e04b65e92456d9888b52b379bdfbd51ee869ef1f0fc
+65b6659695b6cce08'
         }
       }
     ]
