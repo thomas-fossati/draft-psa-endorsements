@@ -1,0 +1,29 @@
+comid.psa-swrel-triples = 5
+
+$$triples-map-extension //= (
+  comid.psa-swrel-triples => [ + psa-swrel-triple-record ]
+)
+
+psa-security-critical = bool
+
+psa.updates = 1
+psa.patches = 2
+
+$psa-swrel-type /= psa.updates
+$psa-swrel-type /= psa.patches
+
+psa-swcomp-id-map = {
+  environment-map
+  psa-refval-id
+}
+
+psa-swrel-triple-record = [
+  ; identifier of the "old" firmware -- the one that is updated/patched
+  psa-swcomp-id-map,
+  ; the "rel" - one of "patches" or "updates"
+  $psa-swrel-type,
+  ; identifier of the "new" firmware
+  psa-swcomp-id-map,
+  ; true if "new" fixes a security vulnerability of "old"
+  psa-security-critical
+]

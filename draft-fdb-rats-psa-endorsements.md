@@ -189,6 +189,14 @@ Reference Value for a firmware measurement associated with Implementation ID
 
 ### Software Upgrades and Patches
 
+<cref>TODO add prose</cref>
+
+~~~
+{::include psa-ext/swrel.cddl}
+~~~
+
+<cref>TODO add an example</cref>
+
 ## Attestation Verification Claims
 {: #sec-keys}
 
