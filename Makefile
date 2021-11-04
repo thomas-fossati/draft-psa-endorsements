@@ -1,4 +1,4 @@
-DRAFT := draft-xyz-rats-psa-endorsements
+DRAFT := draft-fdb-rats-psa-endorsements
 
 SHELL := /bin/bash
 

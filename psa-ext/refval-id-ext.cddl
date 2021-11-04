@@ -1,3 +1,3 @@
-tagged-psa-refval-id = #6.TBD(psa-refval-id)
+tagged-psa-refval-id = #6.601(psa-refval-id)
 
 $measured-element-type-choice /= tagged-psa-refval-id

@@ -1,7 +1,7 @@
 ---
 title: Arm's Platform Security Architecture (PSA) Attestation Verifier Endorsements
 abbrev: PSA Endorsements
-docname: draft-xyz-rats-psa-endorsements
+docname: draft-fdb-rats-psa-endorsements
 date: {DATE}
 category: info
 ipr: trust200902
@@ -98,7 +98,19 @@ There is also a fourth category of PSA Endorsements:
 
 * Endorsements Block List ({{sec-endorsements-block-list}}),
 
-that is used to invalidate previously provisioned Endorsements.
+used to invalidate previously provisioned Endorsements.
+
+## PSA Endorsement Profile
+
+PSA Endorsements are carried in one or more CoMIDs inside a CoRIM.
+
+The profile attribute in the CoRIM MUST be present and MUST have a single entry
+set to the uri `http://arm.com/psa/iot/1` as shown in {{ex-psa-iot-profile}}.
+
+~~~
+{::include examples/profile.diag}
+~~~
+{: #ex-psa-iot-profile title="PSA IoT version 1, CoRIM profile" }
 
 ## PSA Endorsements to PSA RoT Linkage
 {: #sec-psa-rot-id}
@@ -120,6 +132,10 @@ in an `environment-map` as shown in {{ex-psa-rot-id}}.
 ~~~
 {: #ex-psa-rot-id title="Example PSA RoT Identification" }
 
+Optional `vendor` and `model` can be specified as well.  Together, they are
+interpreted as a unique identifier of the product that embeds the PSA RoT.
+Consistently providing a product identifier is RECOMMENDED.
+
 ## Reference Values
 {: #sec-ref-values}
 
@@ -131,11 +147,12 @@ of the PSA token (see Section 3.4.1 of {{PSA-TOKEN}}).
 Each measurement is encoded in a `measurement-map` of a CoMID
 `reference-triple-record`.  Since a `measurement-map` can encode one or more
 measurements, a single `reference-triple-record` can carry as many measurements
-as needed, provided they belong to the same PSA RoT carried in the subject of
-the "reference value" triple.
+as needed, provided they belong to the same PSA RoT identified in the subject of
+the "reference value" triple.  A single `reference-triple-record` SHALL
+completely describe the updatable PSA RoT.
 
-The identifier of a measurement is encoded in a `psa-refval-id` object as
-follows:
+The identifier of a measured software component is encoded in a `psa-refval-id`
+object as follows:
 
 ~~~
 {::include psa-ext/refval-id.cddl}
@@ -143,7 +160,8 @@ follows:
 
 The semantics of the codepoints in the `psa-refval-id` map are equivalent to
 those in the `psa-software-component` map defined in Section 3.4.1 of
-{{PSA-TOKEN}}.
+{{PSA-TOKEN}}.  The `psa-refval-id` MUST uniquely identify a given software
+component within the PSA RoT / product.
 
 In order to support PSA Reference Value identifiers, the
 `$measured-element-type-choice` CoMID type is extended as follows:
@@ -155,12 +173,12 @@ In order to support PSA Reference Value identifiers, the
 and automatically bound to the `comid.mkey` in the `measurement-map`.
 
 The raw measurement is encoded in a `digests-type` object in the
-`measurements-value-map`.  The `digests-type` array MUST contain only one
-entry.  If multiple digests of the same measured component exist (obtained with
-different hash algorithms), a different `psa.measurement-desc` MUST be used in
-the identifier.
+`measurement-values-map`.  The `digests-type` array MUST contain at least one
+entry.  The `digests-type` array MAY contain more than one entry if multiple
+digests (obtained with different hash algorithms) of the same measured
+component exist.
 
-The example in {{ex-reference-value}} shows the PSA Endorsement of type
+The example in {{ex-reference-value}} shows a CoMID a PSA Endorsement of type
 Reference Value for a firmware measurement associated with Implementation ID
 `acme-implementation-id-000000001`.
 
@@ -169,27 +187,31 @@ Reference Value for a firmware measurement associated with Implementation ID
 ~~~
 {: #ex-reference-value title="Example Reference Value"}
 
+### Software Upgrades and Patches
+
 ## Attestation Verification Claims
 {: #sec-keys}
 
 An Attestation Verification Claim carries the verification key associated with
 the Initial Attestation Key (IAK) of a PSA device.  When appraising Evidence,
 the Verifier uses the Implementation ID and Instance ID claims (see
-{{sec-psa-rot-id}}) to retrieve the verification key that it must use to check
+{{sec-psa-rot-id}}) to retrieve the verification key that it SHALL use to check
 the signature on the Evidence.  This allows the Verifier to prove (or disprove)
 the Attester's claimed identity.
 
 Each verification key is provided alongside the corresponding device Instance
-and Implementation IDs in an `attest-key-triple-record`.  Specifically:
+and Implementation IDs (and, possibly, a product identifier) in an
+`attest-key-triple-record`.  Specifically:
 
 * The Instance and Implementation IDs are encoded in the environment-map as
   shown in {{ex-psa-rot-id}};
 * The IAK public key is carried in the `comid.key` entry in the
-  `verification-key-map`.  The IAK public key is encoded as a COSE_Key
-  according to Section 7 of {{!RFC8152}}. There MUST be only one
-  `verification-key-map` in an `identity-triple-record`;
-* The optional `comid.keychain` entry MUST NOT be set by a producer and MUST be
-  ignored by a consumer.
+  `verification-key-map`.  The IAK public key is a PEM-encoded
+  SubjectPublicKeyInfo {{!RFC5280}}.  There MUST be only one
+  `verification-key-map` in an `attest-key-triple-record`;
+* The optional `comid.keychain` entry MUST NOT be set by a CoMID producer that
+  uses the profile described in this document, and MUST be ignored by a CoMID
+  consumer that is parsing according to this profile.
 
 The example in {{ex-attestation-verification-claim}} shows the PSA Endorsement
 of type Attestation Verification Claim carrying a secp256r1 EC public IAK
@@ -212,11 +234,13 @@ certain product (e.g., the target system, the attained certification level, the
 test lab that conducted the evaluation, etc.), and has a unique Certificate
 Number.
 
-The linkage between a PSA RoT and a related SAC is provided by a Certification
-Claim, which binds the PSA RoT Implementation ID with the SAC unique
-Certificate Number.  When appraising Evidence, the Verifier can use the
-Certification Claims associated with the identified Attester as ancillary input
-to the Appraisal Policy, or to enrich the produced Attestation Result.
+The linkage between a PSA RoT -- comprising the immutable part as well as zero
+or more of the mutable components -- and the associated SAC is provided by a
+Certification Claim, which binds the PSA RoT Implementation ID and the software
+component identifiers with the SAC unique Certificate Number.  When appraising
+Evidence, the Verifier can use the Certification Claims associated with the
+identified Attester as ancillary input to the Appraisal Policy, or to enrich
+the produced Attestation Result.
 
 A Certification Claim is encoded in an `psa-cert-triple-record`, which extends
 the `$$triples-map-extension` socket, as follows:
@@ -225,15 +249,20 @@ the `$$triples-map-extension` socket, as follows:
 {::include psa-ext/cert-triple.cddl}
 ~~~
 
-* The Implementation ID to which the SAC applies is encoded in the
-  `tagged-impl-id-type`;
+* The Implementation ID of the immutable PSA RoT to which the SAC applies is
+  encoded as a `tagged-impl-id-type` in the `psa.immutable-rot` of the
+  `psa-rot-descriptor`;
+* Any software component that is part of the certified PSA RoT is encoded as a
+  `psa-refval-id` (see {{sec-ref-values}}) in the `psa.mutable-rot` of the
+  `psa-rot-descriptor`;
 * The unique SAC Certificate Number is encoded in the `psa-cert-num-type`.
 
 A single CoMID can carry one or more Certification Claims.
 
-The example in {{ex-certification-claim}} shows a Certification Claim for
-Certificate Number `1234567890123 - 12345` and Implementation ID
-`acme-implementation-id-000000001`.
+The example in {{ex-certification-claim}} shows a Certification Claim that
+associates Certificate Number `1234567890123 - 12345` to Implementation ID
+`acme-implementation-id-000000001` and a single "PRoT" software component with
+version "1.3.5".
 
 ~~~
 {::include examples/cert-val.diag}
