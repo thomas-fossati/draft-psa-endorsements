@@ -17,11 +17,13 @@ psa-swrel-rel = [
   psa-security-critical ; true if it fixes a security critical bug
 }
 
+sw-rel = [
+  psa-swcomp-id ; identifier of the "new" firmware
+  psa-swrel-rel ; patches, updates and the security flag
+  psa-swcomp-id ; identifier of the "old" firmware
+]
+
 psa-swrel-triple-record = [
   environment-map
-  [ ; the anonymous, reified SW relation triple
-    psa-swcomp-id ; identifier of the "new" firmware
-    psa-swrel-rel ; patches, updates and the security flag
-    psa-swcomp-id ; identifier of the "old" firmware
-  ]
+  sw-rel
 ]
