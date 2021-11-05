@@ -25,8 +25,10 @@
                                          7871f7e5d8bae86b'
         },
 
-        / $psa-swrel-type / 1, / psa.updates /
-        / psa-security-critical / true,
+        / psa-swrel-rel / [
+          / psa-swrel-type-choice / 1, / psa.updates /
+          / psa-security-critical / true
+        ],
 
         / psa-swcomp-id (old) / {
           / psa.measurement-type / 1 : "PRoT",

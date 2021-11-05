@@ -4,20 +4,26 @@ $$triples-map-extension //= (
   comid.psa-swrel-triples => [ + psa-swrel-triple-record ]
 )
 
+psa.updates = 1
+psa.patches = 2
+
+psa-swrel-type-choice /= psa.updates
+psa-swrel-type-choice /= psa.patches
+
 psa-security-critical = bool
 
-psa.update = 1
-psa.patch  = 2
+psa-swrel-rel = [
+  psa-swrel-type-choice ; one of "patches" or "updates"
+  psa-security-critical ; true if it fixes a security critical bug
+}
 
-$psa-swrel-type /= psa.updates
-$psa-swrel-type /= psa.patches
+sw-rel = [
+  psa-swcomp-id ; identifier of the "new" firmware
+  psa-swrel-rel ; patches, updates and the security flag
+  psa-swcomp-id ; identifier of the "old" firmware
+]
 
 psa-swrel-triple-record = [
   environment-map
-  [ ; the implicit, reified triple
-    psa-swcomp-id         ; identifier of the "new" firmware
-    $psa-swrel-type       ; one of "patches" or "updates"
-    psa-security-critical ; true if it fixes a security critical bug
-    psa-swcomp-id-map     ; identifier of the "old" firmware
-  ]
+  sw-rel
 ]
