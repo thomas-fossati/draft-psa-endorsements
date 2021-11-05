@@ -118,6 +118,9 @@ or Certification Claim - is associated with an immutable PSA RoT.  A PSA
 Endorsement is associated to its PSA RoT by means of the unique PSA RoT
 identifier known as Implementation ID (see Section 3.2.2 of {{PSA-TOKEN}}).
 
+In order to support PSA Implementation IDs, the CoMID type
+`$class-id-type-choice` is extended as follows:
+
 ~~~
 {::include psa-ext/tagged-psa-impl-id.cddl}
 ~~~
@@ -166,8 +169,8 @@ those in the `psa-software-component` map defined in Section 3.4.1 of
 {{PSA-TOKEN}}.  The `psa-swcomp-id` MUST uniquely identify a given software
 component within the PSA RoT / product.
 
-In order to support PSA Reference Value identifiers, the
-`$measured-element-type-choice` CoMID type is extended as follows:
+In order to support PSA Reference Value identifiers, the CoMID type
+`$measured-element-type-choice` is extended as follows:
 
 ~~~
 {::include psa-ext/swcomp-id-ext.cddl}
