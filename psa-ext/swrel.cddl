@@ -14,7 +14,7 @@ $psa-swrel-type /= psa.patches
 
 psa-swcomp-id-map = {
   environment-map
-  psa-refval-id
+  psa-swcomp-id
 }
 
 psa-swrel-triple-record = [

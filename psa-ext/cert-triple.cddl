@@ -1,4 +1,4 @@
-pcomid.psa-cert-triples = 4
+comid.psa-cert-triples = 4
 
 $$triples-map-extension //= (
   comid.psa-cert-triples => [ + psa-cert-triple-record ]
@@ -9,7 +9,7 @@ psa.mutable-rot = 2
 
 psa-rot-descriptor = {
   psa.immutable-rot => tagged-impl-id-type
-  psa.mutable-rot => [ * psa-refval-id ]
+  psa.mutable-rot => [ * psa-swcomp-id ]
 }
 
 psa-cert-triple-record = [
