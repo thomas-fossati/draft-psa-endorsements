@@ -10,7 +10,7 @@
             696f6e2d69642d303030303030303031'
         ),
         / psa.mutable-rot / 2 : [
-          / psa-refval-id / 601({
+          / psa-swcomp-id / 601({
             / psa.measurement-type / 1 : "PRoT",
             / psa.version /          4 : "1.3.5",
             / psa.signer-id /        5 : h'acbb11c7e4da2172

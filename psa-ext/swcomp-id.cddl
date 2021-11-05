@@ -1,4 +1,4 @@
-psa-refval-id = {
+psa-swcomp-id = {
   psa.measurement-type => text
   psa.version => text
   psa.signer-id => psa.hash-type

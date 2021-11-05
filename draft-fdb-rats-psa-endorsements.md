@@ -84,7 +84,7 @@ cryptographic key material needed to verify Evidence signed by the device's PSA
 RoT. Additionally, PSA Endorsements can include information related to the
 certification status of the attesting device.
 
-There are three basic types of PSA Endorsements:
+There are five types of PSA Endorsements:
 
 * Reference Values ({{sec-ref-values}}), i.e., measurements of the PSA RoT
   firmware;
@@ -93,12 +93,10 @@ There are three basic types of PSA Endorsements:
   with the identifiers that bind the keys to their device instances;
 * Certification Claims ({{sec-certificates}}), i.e., metadata that describe
   the certification status associated with a PSA device.
-
-There is also a fourth category of PSA Endorsements:
-
-* Endorsements Block List ({{sec-endorsements-block-list}}),
-
-used to invalidate previously provisioned Endorsements.
+* Software Relations ({{sec-swrel}}), used to model upgrade and patch
+  relationships between software components;
+* Endorsements Block List ({{sec-endorsements-block-list}}), used to invalidate
+  previously provisioned Endorsements.
 
 ## PSA Endorsement Profile
 
@@ -151,23 +149,23 @@ as needed, provided they belong to the same PSA RoT identified in the subject of
 the "reference value" triple.  A single `reference-triple-record` SHALL
 completely describe the updatable PSA RoT.
 
-The identifier of a measured software component is encoded in a `psa-refval-id`
+The identifier of a measured software component is encoded in a `psa-swcomp-id`
 object as follows:
 
 ~~~
-{::include psa-ext/refval-id.cddl}
+{::include psa-ext/swcomp-id.cddl}
 ~~~
 
-The semantics of the codepoints in the `psa-refval-id` map are equivalent to
+The semantics of the codepoints in the `psa-swcomp-id` map are equivalent to
 those in the `psa-software-component` map defined in Section 3.4.1 of
-{{PSA-TOKEN}}.  The `psa-refval-id` MUST uniquely identify a given software
+{{PSA-TOKEN}}.  The `psa-swcomp-id` MUST uniquely identify a given software
 component within the PSA RoT / product.
 
 In order to support PSA Reference Value identifiers, the
 `$measured-element-type-choice` CoMID type is extended as follows:
 
 ~~~
-{::include psa-ext/refval-id-ext.cddl}
+{::include psa-ext/swcomp-id-ext.cddl}
 ~~~
 
 and automatically bound to the `comid.mkey` in the `measurement-map`.
@@ -188,6 +186,7 @@ Reference Value for a firmware measurement associated with Implementation ID
 {: #ex-reference-value title="Example Reference Value"}
 
 ### Software Upgrades and Patches
+{: #sec-swrel}
 
 <cref>TODO add prose</cref>
 
@@ -261,7 +260,7 @@ the `$$triples-map-extension` socket, as follows:
   encoded as a `tagged-impl-id-type` in the `psa.immutable-rot` of the
   `psa-rot-descriptor`;
 * Any software component that is part of the certified PSA RoT is encoded as a
-  `psa-refval-id` (see {{sec-ref-values}}) in the `psa.mutable-rot` of the
+  `psa-swcomp-id` (see {{sec-ref-values}}) in the `psa.mutable-rot` of the
   `psa-rot-descriptor`;
 * The unique SAC Certificate Number is encoded in the `psa-cert-num-type`.
 
