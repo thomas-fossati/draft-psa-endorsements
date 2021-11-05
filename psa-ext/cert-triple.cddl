@@ -8,7 +8,7 @@ psa.immutable-rot = 1
 psa.mutable-rot = 2
 
 psa-rot-descriptor = {
-  psa.immutable-rot => tagged-impl-id-type
+  psa.immutable-rot => psa-implementation-id-type
   psa.mutable-rot => [ * psa-swcomp-id ]
 }
 
