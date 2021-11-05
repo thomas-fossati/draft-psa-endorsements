@@ -188,13 +188,30 @@ Reference Value for a firmware measurement associated with Implementation ID
 ### Software Upgrades and Patches
 {: #sec-swrel}
 
-<cref>TODO add prose</cref>
+In order to model software lifecycle events such as updates and patches, this
+profile defines a new triple that conveys the following semantics:
+
+* SUBJECT: a software component
+* PREDICATE: (non-critically / critically) (updates / patches)
+* OBJECT: another software component
+
+The triple is reified and used as the object of another triple,
+`psa-swrel-triple-record`, whose subject is the embedding environment.
 
 ~~~
 {::include psa-ext/swrel.cddl}
 ~~~
 
-<cref>TODO add an example</cref>
+An example of a security critical update involving versions "1.3.5" and "1.4.0"
+of software component "PRoT" within the target environment associated with
+Implementation ID `acme-implementation-id-000000001` is shown in
+{{ex-psa-swrel-update-crit}}.
+
+~~~
+{::include examples/swrel-update-crit.diag}
+~~~
+{: #ex-psa-swrel-update-crit title="Example Critical Software Upgrade" }
+
 
 ## Attestation Verification Claims
 {: #sec-keys}
@@ -291,13 +308,42 @@ from the acceptable set.
 
 # Security Considerations
 
-TODO
+<cref>TODO</cref>
 
 # IANA Considerations
 
-TODO
+## CBOR Tag Registrations
+
+IANA is requested to allocate the following tag in the "CBOR Tags" registry
+{{!IANA.cbor-tags}}, preferably with the specified value:
+
+| Tag | Data Item | Semantics |
+|---
+| 601 | tagged map | PSA Software Component Identifier (see {{sec-ref-values}} of this document) |
+{: #tbl-psa-cbor-tag title="CoRIM CBOR Tags"}
+
+## CoRIM Profile Registration
+
+IANA is requested to register the following profile value in the
+<cref>TODO</cref> CoRIM registry.
+
+| Profile Value | Type | Semantics |
+|---
+| "http://arm.com/psa/iot/1" | uri | The CoRIM profile specified by this document |
+{: #tbl-psa-corim-profile title="PSA profile for CoRIM"}
+
+## CoMID Codepoints
+
+IANA is requested to register the following codepoints to the "CoMID Triples
+Map" registry.
+
+| Index | Item Name | Specification
+|---
+| 4 | comid.psa-cert-triples | RFCTHIS
+| 5 | comid.psa-swrel-triples | RFCTHIS
+{: #tbl-psa-comid-triples title="PSA CoMID Triples"}
 
 # Acknowledgements
 {: numbered="no"}
 
-TODO
+<cref>TODO</cref>
