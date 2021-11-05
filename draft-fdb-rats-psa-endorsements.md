@@ -117,6 +117,11 @@ Each PSA Endorsement - be it a Reference Value, Attestation Verification Claim
 or Certification Claim - is associated with an immutable PSA RoT.  A PSA
 Endorsement is associated to its PSA RoT by means of the unique PSA RoT
 identifier known as Implementation ID (see Section 3.2.2 of {{PSA-TOKEN}}).
+
+~~~
+{::include psa-ext/tagged-psa-impl-id.cddl}
+~~~
+
 Besides, a PSA Endorsement can be associated with a specific instance of a
 certain PSA RoT - as in the case of Attestation Verification Claims.  A PSA
 Endorsement is associated with a PSA RoT instance by means of the Instance ID
@@ -319,7 +324,8 @@ IANA is requested to allocate the following tag in the "CBOR Tags" registry
 
 | Tag | Data Item | Semantics |
 |---
-| 601 | tagged map | PSA Software Component Identifier (see {{sec-ref-values}} of this document) |
+| 600 | tagged bytes | PSA Implementation ID ({{sec-psa-rot-id}} of RFCTHIS) |
+| 601 | tagged map | PSA Software Component Identifier ({{sec-ref-values}} of RFCTHIS) |
 {: #tbl-psa-cbor-tag title="CoRIM CBOR Tags"}
 
 ## CoRIM Profile Registration
@@ -329,7 +335,7 @@ IANA is requested to register the following profile value in the
 
 | Profile Value | Type | Semantics |
 |---
-| "http://arm.com/psa/iot/1" | uri | The CoRIM profile specified by this document |
+| `http://arm.com/psa/iot/1` | uri | The CoRIM profile specified by this document |
 {: #tbl-psa-corim-profile title="PSA profile for CoRIM"}
 
 ## CoMID Codepoints
