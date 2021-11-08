@@ -304,6 +304,8 @@ version "1.3.5".
 ## Endorsements Block List
 {: #sec-endorsements-block-list}
 
+<cref>This is work in progress.  It may change or be removed in the future.</cref>
+
 The following three "blocklist" claims:
 
 * `reference-blocklist-triple`
