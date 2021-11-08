@@ -9,14 +9,14 @@
           / comid.class-id / 0 :
           / tagged-impl-id-type / 600(
             h'61636d652d696d706c656d656e746174
-            696f6e2d69642d303030303030303031'
+              696f6e2d69642d303030303030303031'
           ),
           / comid.vendor / 1 : "ACME Ltd.",
           / comid.model /  2 : "Roadrunner 1.0"
         },
 
-        [
-          / psa-swcomp-id (new) / {
+        / sw-rel / [
+          / new / {
             / psa.measurement-type / 1 : "PRoT",
             / psa.version /          4 : "1.4.0",
             / psa.signer-id /        5 : h'acbb11c7e4da2172
@@ -25,12 +25,12 @@
                                            7871f7e5d8bae86b'
           },
 
-          / psa-swrel-rel / [
-            / psa-swrel-type-choice / 1, / psa.updates /
-            / psa-security-critical / true
+          / rel / [
+            / type / 1, / psa.updates /
+            / security-critical / true
           ],
 
-          / psa-swcomp-id (old) / {
+          / old / {
             / psa.measurement-type / 1 : "PRoT",
             / psa.version /          4 : "1.3.5",
             / psa.signer-id /        5 : h'acbb11c7e4da2172
