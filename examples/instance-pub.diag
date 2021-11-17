@@ -22,8 +22,8 @@
                 88767751bf2645ca923f57a98becd296'
             )
         },
-        / verification-key-map / [
-          {
+        [
+          / verification-key-map / {
             / comid.key / 0 :
               "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgA
               ETl4iCZ47zrRbRG0TVf0dw7VFlHtv18HInY

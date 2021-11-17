@@ -16,8 +16,8 @@
               / comid.model /  2 : "Roadrunner 1.0"
           }
         },
-        / measurement-map / [
-          {
+        [
+          / measurement-map / {
             / comid.mkey / 0 : 601({
               / psa.measurement-type / 1 : "PRoT",
               / psa.version /          4 : "1.3.5",
