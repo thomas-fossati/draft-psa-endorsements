@@ -7,7 +7,7 @@ $$triples-map-extension //= (
 security-critical = bool
 
 psa-fw-patch-triple-record = [
-  measurement-map,  / "old" firwmare component /
-  measurement-map,  / "new" firwmare component /
+  measurement-map,  / "old" firmware component /
+  measurement-map,  / "new" firmware component /
   security-critical / true if "new" fixes a security vulnerability of "old" /
 ]
