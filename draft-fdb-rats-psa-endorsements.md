@@ -1,7 +1,7 @@
 ---
 title: Arm's Platform Security Architecture (PSA) Attestation Verifier Endorsements
 abbrev: PSA Endorsements
-docname: draft-fdb-rats-psa-endorsements
+docname: draft-fdb-rats-psa-endorsements-latest
 date: {DATE}
 category: info
 ipr: trust200902
@@ -25,8 +25,8 @@ author:
 
 -
   name: Thomas Fossati
-  org: Arm Ltd
-  email: thomas.fossati@arm.com
+  org: Linaro
+  email: thomas.fossati@linaro.org
 
 -
   name: Yogesh Deshpande
@@ -41,10 +41,10 @@ author:
 normative:
   PSA-TOKEN: I-D.tschofenig-rats-psa-token
 
-  CoRIM: I-D.birkholz-rats-corim
+  CoRIM: I-D.ietf-rats-corim
 
 informative:
-  RATS-ARCH: I-D.ietf-rats-architecture
+  RATS-ARCH: RFC9334
 
   PSA-CERTIFIED:
    target: https://www.psacertified.org
